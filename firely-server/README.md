@@ -47,6 +47,13 @@ The following table lists the configurable parameters of the firely-server chart
 | `nameOverride`                                           | String to partially override firely-server.fullname template (will maintain the release name) | `""`
 | `fullnameOverride`                                       | String to fully override firely-server.fullname template | `""` |
 
+### Security parameters
+
+ Name                                                      | Description                                                               | Default                                             |
+| -------------------------------------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------- |
+| `podSecurityContext`                                      | Security settings for the Pod, like `fsGroup`.                           | `{}`                                   |
+| `securityContext`                                         | Security settings for the container, like `allowPrivilegeEscalation` and `capabilities`.                                                   | `{}`                                             |
+
 ### Firely Server parameters
  Name                                                      | Description                                                               | Default                                             |
 | -------------------------------------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------- |

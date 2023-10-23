@@ -3,7 +3,23 @@ entries:
   firely-auth:
   - apiVersion: v2
     appVersion: 3.0.0
-    created: "2023-02-21T11:53:26.1778047+01:00"
+    created: "2023-10-23T11:21:06.1397984+02:00"
+    description: A Helm chart for Kubernetes, deploying the Firely Auth Server
+    digest: 36a05fd549dd99707c8a6a81738079231b6cbe613777530c6602422ad1e8d77c
+    icon: https://fire.ly/wp-content/uploads/2021/09/ICONS_FIRELY_02-04.svg
+    kubeVersion: '>= 1.19'
+    maintainers:
+    - email: marco@fire.ly
+      name: Marco Visser
+      url: https://fire.ly
+    name: firely-auth
+    type: application
+    urls:
+    - firely-auth-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: 3.0.0
+    created: "2023-10-23T11:21:06.1392713+02:00"
     description: A Helm chart for Kubernetes, deploying the Firely Auth Server
     digest: afc099066f698622a887666de74fe96de12a39bc164e73b2e81edbbbfd3d5bd8
     icon: https://fire.ly/wp-content/uploads/2021/09/ICONS_FIRELY_02-04.svg
@@ -17,4 +33,4 @@ entries:
     urls:
     - firely-auth-0.2.0.tgz
     version: 0.2.0
-generated: "2023-02-21T11:53:26.1772762+01:00"
+generated: "2023-10-23T11:21:06.1386539+02:00"

@@ -44,6 +44,7 @@ The following table lists the configurable parameters of the firely-server chart
 ### Common parameters
  Name                                                      | Description                                                               | Default                                             |
 | -------------------------------------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------- |
+| `imagePullSecrets`                                       | Reference to one or more secrets to be used when pulling images    | `[]` |
 | `nameOverride`                                           | String to partially override firely-server.fullname template (will maintain the release name) | `""`
 | `fullnameOverride`                                       | String to fully override firely-server.fullname template | `""` |
 

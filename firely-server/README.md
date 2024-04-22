@@ -94,7 +94,7 @@ The following table lists the configurable parameters of the firely-server chart
 | `service.port`                                           | The port which the Kubernetes service will expose the Firely Server pod   | `80` |
 | `ingress.enabled`                                        | Enable ingress record generation for Firely Server                        | `false` |
 | `ingress.annotations`                                    | Annotations for this host's ingress record                                | `{}` |
-| `ingress.ingressClass`                                   | IngressClass that will be be used to implement the Ingress                | `nginx` |
+| `ingress.className`                                      | Ingress Class Name that will be be used to implement the Ingress          | `nginx` |
 | `ingress.certIssuer`                                     | The name of the cert-manager                                              | `letsencrypt-production` |
 | `ingress.path`                                           | Path within the url structure                                             | `/` |
 | `ingress.pathType`                                       | Ingress path type                                                         | `Prefix` |

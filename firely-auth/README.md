@@ -62,6 +62,7 @@ The following table lists the configurable parameters of the firely-auth chart a
 | `license.secretName`                                     | You can  save the Firely Auth license key yourself as a Kubernetes secret. Use then the name of that secret here. This setting overrides `license.value`| `nil` |
 | `license.fileName`                                       | The name of the license file used internally. No reason to change that. | `firely-auth-license.json` |
 | `license.value`                                          | The content of the license. See also more information below. | `nil` |
+| `envFromSecret`                                          | The name of an existing secret in the same kubernetes namespace which contains key-value pairs which are converted into environment variables of the Firely Auth container. This is the recommended approach for specifying all confidential settings, like connection strings, etc. For example, run the following to create a secret containing a connection string for MSSQL: `kubectl create secret generic -n ${FA_NAMESPACE} fa-env-secret  --from-literal=FIRELY_AUTH_UserStore__SqlServer__ConnectionString='User Id=fauser;...'`| `nil` |
 
 
 ### Firely Auth deployment parameters 

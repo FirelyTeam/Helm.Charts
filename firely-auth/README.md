@@ -80,7 +80,7 @@ The following table lists the configurable parameters of the firely-auth chart a
 | `service.port`                                           | The port which the Kubernetes service will expose the Firely Auth pod     | `80` |
 | `ingress.enabled`                                        | Enable ingress record generation for Firely Auth                          | `false` |
 | `ingress.annotations`                                    | Annotations for this host's ingress record                                | `{}` |
-| `ingress.ingressClass`                                   | IngressClass that will be be used to implement the Ingress                | `nginx` |
+| `ingress.className`                                      | Ingress Class Name that will be be used to implement the Ingress          | `nginx` |
 | `ingress.certIssuer`                                     | The name of the cert-manager                                              | `letsencrypt-production` |
 | `ingress.hosts[0]`                                       | Hostname to your FIrelyAuth installation                                  | `chart-example.local` |
 | `ingress.hosts[0].path`                                  | Path within the url structure                                             | `/` |

@@ -2,8 +2,26 @@ apiVersion: v1
 entries:
   firely-server:
   - apiVersion: v2
+    appVersion: 5.5.2
+    created: "2024-04-24T13:11:55.666840775Z"
+    description: Firely Server is an enterprise-grade FHIR server meant for production
+      environments large and small alike.
+    digest: 6e6fe51799db6e25472de534a9b3497e97ca31430e4a0c332c0d27f163bcc797
+    home: https://fire.ly/products/firely-server/
+    icon: https://fire.ly/wp-content/uploads/2021/09/ICONS_FIRELY_02-04.svg
+    kubeVersion: '>= 1.19'
+    maintainers:
+    - email: marco@fire.ly
+      name: Marco Visser
+      url: https://fire.ly
+    name: firely-server
+    type: application
+    urls:
+    - firely-server-0.16.0.tgz
+    version: 0.16.0
+  - apiVersion: v2
     appVersion: 5.4.0
-    created: "2024-01-08T08:18:20.302447909Z"
+    created: "2024-04-24T13:11:55.665332791Z"
     description: Firely Server is an enterprise-grade FHIR server meant for production
       environments large and small alike.
     digest: 5499ce6a201ec7bed6add4d295b060426602696773579e904a411ec3d68726ff
@@ -21,7 +39,7 @@ entries:
     version: 0.15.0
   - apiVersion: v2
     appVersion: 5.3.0
-    created: "2024-01-08T08:18:20.301474501Z"
+    created: "2024-04-24T13:11:55.664019418Z"
     description: Firely Server is an enterprise-grade FHIR server meant for production
       environments large and small alike.
     digest: bed432c658e907abc5a6b86abb498a25309710168fc3a6e071708f580fb2d249
@@ -39,7 +57,7 @@ entries:
     version: 0.14.0
   - apiVersion: v2
     appVersion: 5.0.0
-    created: "2024-01-08T08:18:20.300680994Z"
+    created: "2024-04-24T13:11:55.658249395Z"
     description: Firely Server is an enterprise-grade FHIR server meant for production
       environments large and small alike.
     digest: 85c1535e065356c3a9c9257128c4067ea2992e3cefa6c67bf1312f13150d7e62
@@ -57,7 +75,7 @@ entries:
     version: 0.13.0
   - apiVersion: v2
     appVersion: 4.10.0
-    created: "2024-01-08T08:18:20.299676886Z"
+    created: "2024-04-24T13:11:55.657390047Z"
     description: Firely Server is an enterprise-grade FHIR server meant for production
       environments large and small alike.
     digest: 02a7ba66e0dd923c9979fc2181b76801f56e476ed85d9381edc76b17b02105f3
@@ -75,7 +93,7 @@ entries:
     version: 0.12.0
   - apiVersion: v2
     appVersion: 4.8.2
-    created: "2024-01-08T08:18:20.298659477Z"
+    created: "2024-04-24T13:11:55.656587902Z"
     description: Firely Server is an enterprise-grade FHIR server meant for production
       environments large and small alike.
     digest: 41aa8482376b75048c9437270c75dc7130d39311f21f3fe187e45b4c4dd261b5
@@ -93,7 +111,7 @@ entries:
     version: 0.11.1
   - apiVersion: v2
     appVersion: 4.7.0
-    created: "2024-01-08T08:18:20.297627468Z"
+    created: "2024-04-24T13:11:55.655272429Z"
     description: Firely Server is an enterprise-grade FHIR server meant for production
       environments large and small alike.
     digest: 8bc5caeff4481eea15291427984e4005ef04a8d62a1d45b53802646fd911b564
@@ -109,4 +127,4 @@ entries:
     urls:
     - firely-server-0.11.0.tgz
     version: 0.11.0
-generated: "2024-01-08T08:18:20.295915054Z"
+generated: "2024-04-24T13:11:55.654308575Z"

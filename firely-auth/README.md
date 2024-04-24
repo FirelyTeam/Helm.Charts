@@ -110,5 +110,5 @@ license:
 
 Install the firely-auth chart like this:
 ```console
-$ helm install my-release -f ..\firely-auth-license.yaml firely-auth/firely-auth
+$ helm install my-release -f .\firely-auth-license.yaml firely-auth/firely-auth
 ```

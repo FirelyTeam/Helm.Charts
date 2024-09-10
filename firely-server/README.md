@@ -561,13 +561,13 @@ $ helm install my-release -n <FSNAMESPACE> -f ./firelyserver-license.yaml --valu
 where the content of `dependencies.yaml` is
 ```YAML
 extraEnvs:
-  - name: VONK_InfluxDbOptions__Host
+  - name: VONK_RealWorldTesting__InfluxDbOptions__Host
     value: <INFLUXDB_ENDPOINT>
-  - name: VONK_InfluxDbOptions__Bucket
+  - name: VONK_RealWorldTesting__InfluxDbOptions__Bucket
     value: <INFLUXDB_RWT_BUCKET>
-  - name: VONK_InfluxDbOptions__Organization
+  - name: VONK_RealWorldTesting__InfluxDbOptions__Organization
     value: <INFLUXDB_RWT_ORG>
-  - name: VONK_InfluxDbOptions__Token
+  - name: VONK_RealWorldTesting__InfluxDbOptions__Token
     value: <INFLUXDB_ADMIN_TOKEN>
   - name: VONK_OpenTelemetryOptions__Endpoint
     value: <OPENTELEMETRYCOLLECTOR_ENDPOINT>

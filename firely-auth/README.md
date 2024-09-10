@@ -102,6 +102,13 @@ The following table lists the configurable parameters of the firely-auth chart a
 | `ingress.hosts[0].pathType`                              | Ingress path type                                                         | `ImplementationSpecific` |
 | `ingress.tls[0].secretName`                              | The secretname used in the cert-manager                                   | `nil` |
 
+### Persistence Parameters
+ Name                                                      | Description                                                               | Default                                             |
+| -------------------------------------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------- |
+| `persistence.enabled`                                    | When set to `true` a mount would be available in the Firely Auth pod on path `/var/run/fa` | `false` |
+| `persistence.existingPVClaim`                            | The name of an existing PVC to use for persistence                        | `nil` |
+
+
 ### Service Account parameters
  Name                                                      | Description                                                               | Default                                             |
 | -------------------------------------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------- |

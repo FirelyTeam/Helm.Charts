@@ -77,6 +77,7 @@ The following table lists the configurable parameters of the firely-server chart
 ### Firely Server deployment parameters 
  Name                                                      | Description                                                               | Default                                             |
 | -------------------------------------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------- |
+| `deployment.annotations`                                 | Annotations to be set on the deployment                                   |  `{}`                                               |
 | `replicaCount`                                           | Number of replicas in the replica set                                     | `1`                                                 |
 | `readinessProbe.initialDelaySeconds`                     | Number of seconds after the container has started before readiness probes are initiated | `15` |
 | `readinessProbe.timeoutSeconds`                          | Number of seconds after which the probe times out  | `5` |

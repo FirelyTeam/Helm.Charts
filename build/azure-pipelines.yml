@@ -41,10 +41,11 @@ stages:
 
 - stage: DeployHelmPackage
   displayName: 'Deploy Helm Package'
-  dependsOn: PublishHelmPackage
+  dependsOn: PackageHelmChart
   condition: eq(variables.isReleaseTag, true) 
   jobs:
     - deployment: DeployHelmPackage
+      environment: 'HelmChartsGitHub'
       displayName: 'Deploy Helm Chart'   
       strategy:
         runOnce:

@@ -2,6 +2,8 @@
 
 <img src="https://fire.ly/wp-content/themes/firely/images/logo.svg" alt="Firely" width="200"/>
 
+This is a [Helm](https://helm.sh/) charts repository for Kubernetes made by [Firely](https://fire.ly).
+
 ## Add the Firely Helm repository
 
 ```bash

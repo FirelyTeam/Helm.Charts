@@ -1,0 +1,139 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "firely-auth.fullname" . }}
+  labels:
+    {{- include "firely-auth.labels" . | nindent 4 }}
+  annotations:
+    {{ toYaml .Values.deployment.annotations | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "firely-auth.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/settings.configmap: {{ include (print $.Template.BasePath "/settings-configmap.yaml") . | sha256sum }}
+        {{- if .Values.license.value }}
+        checksum/license-secret: {{ include (print $.Template.BasePath "/license-secret.yaml") . | sha256sum }}
+        {{- end }}
+     
+      {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "firely-auth.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "firely-auth.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+      {{- if .Values.persistence.enabled }}
+      # Ensure that the service account can read/write from the persistent volume
+      - name: init-permissions
+        image: busybox
+        command: ['sh', '-c', 'chmod -R 777 /var/run/fa']
+        volumeMounts:
+        - name: firely-auth-storage
+          mountPath: /var/run/fa
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.containerPort }}
+              protocol: TCP
+          livenessProbe:
+{{ toYaml .Values.livenessProbe | indent 12 }}
+          readinessProbe:
+{{ toYaml .Values.readinessProbe | indent 12 }}
+          envFrom:
+          - configMapRef:
+             name: {{ include "firely-auth.fullname" . }}-conf
+          {{- if .Values.envFromSecret }}
+          - secretRef:
+              name: {{ .Values.envFromSecret }}
+          {{- end }}
+          env:
+          {{- if .Values.extraEnvs }}
+          {{- with .Values.extraEnvs }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
+          {{- end }}
+
+          volumeMounts:
+          - name: firely-auth-storage
+            mountPath: /var/run/fa
+          {{- if not .Values.license.mountedFromExtraVolumes }}
+          - name: firely-auth-license
+            mountPath: {{ .Values.license.mountPath }}
+            readOnly: true
+          {{- end }}
+          - name: firely-auth-settings
+            mountPath: /app/appsettings.instance.json
+            subPath: appsettings.json
+          - name: firely-auth-settings
+            mountPath: /app/logsettings.instance.json
+            subPath: logsettings.json
+
+          {{- if .Values.extraMountPoints }}
+            {{- toYaml .Values.extraMountPoints | nindent 10 }}
+          {{- end }}
+
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+      - name: firely-auth-settings
+        configMap:
+          name: {{ include "firely-auth.fullname" . }}-settings-json
+      {{- if not .Values.license.mountedFromExtraVolumes }}
+      - name: firely-auth-license
+        {{- if .Values.license.secretName }}
+        secret:
+          secretName: {{ .Values.license.secretName  }}
+        {{- else if .Values.license.value }}
+        secret:
+          secretName: {{ include "firely-auth.fullname" . }}-license-secret
+        {{- else }}
+        emptyDir: {}
+        {{- end }}
+      {{- end }}
+      - name: firely-auth-storage
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          {{- if .Values.persistence.existingPVClaim }}
+          claimName: {{ .Values.persistence.existingPVClaim }}
+          {{- else }}
+          claimName: {{ include "firely-auth.fullname" . }}-claim
+          {{- end -}}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      {{- if .Values.extraVolumes }}
+      {{- with .Values.extraVolumes }}
+          {{- toYaml . | nindent 6 }}
+      {{- end }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

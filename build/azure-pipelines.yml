@@ -1,0 +1,96 @@
+# Repo: FirelyTeam/Helm.Charts
+# File: build/azure-pipelines.yml
+
+# trigger on the path and branch are set in AzureDevOps (see the UI of the pipeline)
+
+# Used variables: (set in the UI of the pipeline)
+# - SOURCE_FOLDER: folder where the helm chart is located, for example './charts/firely-server/'
+# - TARGET_FOLDER: 'FA'
+# - TARGET_SITE: location where the packaged Helm chart can be downloaded, for example 'https://firelyteam.github.io/Helm.Charts/releases'
+
+name: $(date:yyyyMMdd)$(rev:.r)
+
+variables:
+  - group: Git credentials
+  - name: isReleaseTag
+    value: $[startsWith(variables['Build.SourceBranch'], variables['RELEASE_TAG'])] #Release tag set in the UI variale e.g. 'refs/tags/FA/v'
+
+pool: 
+  vmImage: 'ubuntu-latest'
+
+stages:
+- stage: PublishHelmPackage
+  jobs:
+    - job: PublishHelmPackage
+      steps:
+      - task: HelmInstaller@1
+        displayName: 'Install Helm 3.17.0'
+        inputs:
+          helmVersionToInstall : 3.17.0
+      
+      - script: |
+          helm package $(SOURCE_FOLDER) --dependency-update --destination $(Build.ArtifactStagingDirectory)
+        displayName: 'helm package'
+
+      - task: PublishBuildArtifacts@1
+        displayName: 'Publish Artifact: helm-packages'
+        inputs:
+          ArtifactName: 'helm-packages'
+
+- stage: DeployHelmPackage
+  dependsOn: PublishHelmPackage
+  condition: eq(variables.isReleaseTag, true) 
+  jobs:
+    - deployment: DeployHelmPackage
+      environment: HelmChartsGitHub
+      displayName: 'Deploy Helm Charts'   
+      strategy:
+        runOnce:
+          deploy:   
+            steps:
+            - task: HelmInstaller@1
+              displayName: 'Install Helm 3.17.0'
+              inputs:
+                helmVersionToInstall: 3.17.0
+            
+            - download: current
+              artifact: 'helm-packages'
+              displayName: 'Download helm package artifact'
+  
+            - script: |
+                # download the index.yaml file from https://firelyteam.github.io/Helm.Charts
+                curl -o $(Pipeline.Workspace)/current-index.yaml https://firelyteam.github.io/Helm.Charts/index.yaml
+                helm repo index $(Pipeline.Workspace) --url $(TARGET_SITE)/ --merge $(Pipeline.Workspace)/current-index.yaml
+              displayName: 'helm repo index'
+
+            - task: GitHubRelease@1
+              displayName: 'GitHub release (create)'  
+              inputs:
+                gitHubConnection: 'GitHub Helm.Charts release'
+                repositoryName: '$(Build.Repository.Name)'
+                action: 'create'
+                target: '$(Build.SourceVersion)'
+                tagSource: gitTag
+                tagPattern: 'v.*'
+                releaseNotesSource: filePath
+                releaseNotesFilePath: $(Build.SourcesDirectory)\release-notes.md
+                title: '$(release_title)'
+                isDraft: true
+                changeLogCompareToRelease: lastNonDraftRelease
+                changeLogType: issueBased
+                changeLogLabels: '[{ "label" : "bug", "displayName" : "Bugfixes", "state" : "closed" },{ "label" : "enhancement", "displayName" : "New Functionality", "state" : "closed" }]'
+                assets: '$(Pipeline.Workspace)/*.tgz'
+
+
+
+
+
+
+
+
+
+
+
+
+        
+

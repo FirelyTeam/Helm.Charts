@@ -16,6 +16,8 @@ variables:
   - name: isReleaseTag
     value: true
     #value: $[startsWith(variables['Build.SourceBranch'], variables['RELEASE_TAG'])] #Release tag set in the UI variale e.g. 'refs/tags/FA/v'
+  - name: helmVersion
+    value: '3.17.0'
 
 pool: 
   vmImage: 'ubuntu-latest'
@@ -28,9 +30,9 @@ stages:
       displayName: 'Package Helm Chart'
       steps:
       - task: HelmInstaller@1
-        displayName: 'Install Helm 3.17.0'
+        displayName: 'Install Helm $(helmVersion)'
         inputs:
-          helmVersionToInstall : 3.17.0
+          helmVersionToInstall : $(helmVersion)
       
       - script: |
           helm package $(SOURCE_FOLDER) --dependency-update --destination $(Build.ArtifactStagingDirectory)
@@ -54,9 +56,9 @@ stages:
           deploy:   
             steps:
             - task: HelmInstaller@1
-              displayName: 'Install Helm 3.17.0'
+              displayName: 'Install Helm $(helmVersion)'
               inputs:
-                helmVersionToInstall: 3.17.0
+                helmVersionToInstall: $(helmVersion)
             
             - download: current
               artifact: 'helm-packages'

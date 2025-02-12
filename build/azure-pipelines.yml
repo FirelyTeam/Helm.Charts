@@ -4,6 +4,7 @@
 # trigger on the path and branch are set in AzureDevOps (see the UI of the pipeline)
 
 # Used variables: (set in the UI of the pipeline)
+# - RELEASE_TAG: pattern of the release tag, like 'refs/tags/FS/v'
 # - SOURCE_FOLDER: folder where the helm chart is located, for example './charts/firely-server/'
 # - TARGET_FOLDER: 'FA'
 # - TARGET_SITE: location where the packaged Helm chart can be downloaded, for example 'https://firelyteam.github.io/Helm.Charts/releases'
@@ -62,8 +63,9 @@ stages:
   
             - script: |
                 # download the index.yaml file from https://firelyteam.github.io/Helm.Charts
-                curl -o $(Pipeline.Workspace)/current-index.yaml https://firelyteam.github.io/Helm.Charts/index.yaml
+                curl -sS -o $(Pipeline.Workspace)/current-index.yaml https://firelyteam.github.io/Helm.Charts/index.yaml
                 helm repo index $(Pipeline.Workspace) --url $(TARGET_SITE)/ --merge $(Pipeline.Workspace)/current-index.yaml
+                cat $(Pipeline.Workspace)/index.yaml
               displayName: 'helm repo index'
 
             - task: GitHubRelease@1

@@ -19,9 +19,11 @@ pool:
   vmImage: 'ubuntu-latest'
 
 stages:
-- stage: PublishHelmPackage
+- stage: PackageHelmChart
+  displayName: 'Package Helm Chart'
   jobs:
-    - job: PublishHelmPackage
+    - job: PackageHelmChart
+      displayName: 'Package Helm Chart'
       steps:
       - task: HelmInstaller@1
         displayName: 'Install Helm 3.17.0'
@@ -32,18 +34,18 @@ stages:
           helm package $(SOURCE_FOLDER) --dependency-update --destination $(Build.ArtifactStagingDirectory)
         displayName: 'helm package'
 
-      - task: PublishBuildArtifacts@1
-        displayName: 'Publish Artifact: helm-packages'
-        inputs:
-          ArtifactName: 'helm-packages'
+      - publish: $(Build.ArtifactStagingDirectory)
+        artifact: 'helm-packages'
+        displayName: 'Publish helm package artifact'
+      
 
 - stage: DeployHelmPackage
+  displayName: 'Deploy Helm Package'
   dependsOn: PublishHelmPackage
   condition: eq(variables.isReleaseTag, true) 
   jobs:
     - deployment: DeployHelmPackage
-      environment: HelmChartsGitHub
-      displayName: 'Deploy Helm Charts'   
+      displayName: 'Deploy Helm Chart'   
       strategy:
         runOnce:
           deploy:   

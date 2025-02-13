@@ -69,22 +69,22 @@ stages:
                 build_source_branch='refs/tags/FS/v0.20.0'
 
                 # url encode tag name (like 'FS/v0.20.0' -> 'FS%2Fv0.20.0')
-                val=`printf %s ${build_source_branch#'refs/tag/'} | jq -sRr @uri`
+                val=`printf %s ${build_source_branch#'refs/tags/'} | jq -sRr @uri`
                 echo 'tag_encoded: ' $val
-                echo "##vso[task.setvariable variable=tag_encoded;]val"
+                echo "##vso[task.setvariable variable=tag_encoded;]$val"
 
                 # release title (chart name and version, like 'firely-server-0.20.0')
                 files=($(Pipeline.Workspace)/$(artifactName)/*.tgz)
                 val=`basename ${files[0]} .tgz`
                 echo 'release_titel: ' $val
-                echo "##vso[task.setvariable variable=release_titel;]val"
+                echo "##vso[task.setvariable variable=release_titel;]$val"
               displayName: 'Setting variables'
   
             - script: |
                 # download the index.yaml file from https://firelyteam.github.io/Helm.Charts
                 curl -sS -o $(Pipeline.Workspace)/current-index.yaml https://firelyteam.github.io/Helm.Charts/index.yaml
                 helm repo index $(Pipeline.Workspace)/$(artifactName) --url $(TARGET_SITE)/$(tag_encoded) --merge $(Pipeline.Workspace)/current-index.yaml
-                cat $(Pipeline.Workspace)/index.yaml
+                cat $(Pipeline.Workspace)/$(artifactName)/index.yaml
               displayName: 'helm repo index'
 
             - task: GitHubRelease@1

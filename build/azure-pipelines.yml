@@ -35,7 +35,8 @@ stages:
       
       - script: |
           # create regex of the release tag (like '\/refs\/tags\/FS\/v.*')
-          val="${$(RELEASE_TAG)////'\'/}.*"
+          release_tag=$(RELEASE_TAG)
+          val="${release_tag////'\'/}.*"
           echo 'tag_pattern: ' $val
         displayName: 'Setting variables'
       

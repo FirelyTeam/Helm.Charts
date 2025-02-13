@@ -107,6 +107,7 @@ stages:
                 tagPattern: '$(release_tag)'
                 title: '$(release_title)'
                 isDraft: true
+                addChangeLog: true
                 changeLogCompareToRelease: lastNonDraftReleaseByTag
                 changeLogCompareToReleaseTag: '$(release_tag)'
                 changeLogType: issueBased

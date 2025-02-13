@@ -107,7 +107,6 @@ stages:
                 tagPattern: '$(release_tag)'
                 title: '$(release_title)'
                 isDraft: true
-                addChangeLog: true
                 changeLogCompareToRelease: lastNonDraftRelease
                 changeLogType: issueBased
                 changeLogLabels: '[{ "label" : "bug", "displayName" : "Bugfixes", "state" : "closed" },{ "label" : "enhancement", "displayName" : "New Functionality", "state" : "closed" }]'

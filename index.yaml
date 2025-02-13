@@ -30,7 +30,7 @@ entries:
     name: firely-server
     type: application
     urls:
-    - https://github.com/FirelyTeam/Helm.Charts/blob/main/firely-server/firely-server-0.19.0.tgz
+    - https://github.com/FirelyTeam/Helm.Charts/releases/download/FS%2Fv0.19.0/firely-server-0.19.0.tgz
     version: 0.19.0
   - apiVersion: v2
     appVersion: 5.9.1
@@ -61,7 +61,7 @@ entries:
     name: firely-server
     type: application
     urls:
-    - https://github.com/FirelyTeam/Helm.Charts/blob/main/firely-server/firely-server-0.18.1.tgz
+    - https://github.com/FirelyTeam/Helm.Charts/releases/download/FS%2Fv0.18.1/firely-server-0.18.1.tgz
     version: 0.18.1
   - apiVersion: v2
     appVersion: 5.9.1
@@ -92,7 +92,7 @@ entries:
     name: firely-server
     type: application
     urls:
-    - https://github.com/FirelyTeam/Helm.Charts/blob/main/firely-server/firely-server-0.18.0.tgz
+    - https://github.com/FirelyTeam/Helm.Charts/releases/download/FS%2Fv0.18.0/firely-server-0.18.0.tgz
     version: 0.18.0
   - apiVersion: v2
     appVersion: 5.7.0
@@ -123,7 +123,7 @@ entries:
     name: firely-server
     type: application
     urls:
-    - https://github.com/FirelyTeam/Helm.Charts/blob/main/firely-server/firely-server-0.17.0.tgz
+    - https://github.com/FirelyTeam/Helm.Charts/releases/download/FS%2Fv0.17.0/firely-server-0.17.0.tgz
     version: 0.17.0
   - apiVersion: v2
     appVersion: 5.5.2
@@ -141,7 +141,7 @@ entries:
     name: firely-server
     type: application
     urls:
-    - https://github.com/FirelyTeam/Helm.Charts/blob/main/firely-server/firely-server-0.16.0.tgz
+    - https://github.com/FirelyTeam/Helm.Charts/releases/download/FS%2Fv0.16.0/firely-server-0.16.0.tgz
     version: 0.16.0
   - apiVersion: v2
     appVersion: 5.4.0
@@ -159,7 +159,7 @@ entries:
     name: firely-server
     type: application
     urls:
-    - https://github.com/FirelyTeam/Helm.Charts/blob/main/firely-server/firely-server-0.15.0.tgz
+    - https://github.com/FirelyTeam/Helm.Charts/releases/download/FS%2Fv0.15.0/firely-server-0.15.0.tgz
     version: 0.15.0
   - apiVersion: v2
     appVersion: 5.3.0
@@ -177,7 +177,7 @@ entries:
     name: firely-server
     type: application
     urls:
-    - https://github.com/FirelyTeam/Helm.Charts/blob/main/firely-server/firely-server-0.14.0.tgz
+    - https://github.com/FirelyTeam/Helm.Charts/releases/download/FS%2Fv0.14.0/firely-server-0.14.0.tgz
     version: 0.14.0
   - apiVersion: v2
     appVersion: 5.0.0
@@ -195,7 +195,7 @@ entries:
     name: firely-server
     type: application
     urls:
-    - https://github.com/FirelyTeam/Helm.Charts/blob/main/firely-server/firely-server-0.13.0.tgz
+    - https://github.com/FirelyTeam/Helm.Charts/releases/download/FS%2Fv0.13.0/firely-server-0.13.0.tgz
     version: 0.13.0
   - apiVersion: v2
     appVersion: 4.10.0
@@ -213,7 +213,7 @@ entries:
     name: firely-server
     type: application
     urls:
-    - https://github.com/FirelyTeam/Helm.Charts/blob/main/firely-server/firely-server-0.12.0.tgz
+    - https://github.com/FirelyTeam/Helm.Charts/releases/download/FS%2Fv0.12.0/firely-server-0.12.0.tgz
     version: 0.12.0
   - apiVersion: v2
     appVersion: 4.8.2
@@ -231,7 +231,7 @@ entries:
     name: firely-server
     type: application
     urls:
-    - https://github.com/FirelyTeam/Helm.Charts/blob/main/firely-server/firely-server-0.11.1.tgz
+    - https://github.com/FirelyTeam/Helm.Charts/releases/download/FS%2Fv0.11.1/firely-server-0.11.1.tgz
     version: 0.11.1
   - apiVersion: v2
     appVersion: 4.7.0
@@ -249,7 +249,7 @@ entries:
     name: firely-server
     type: application
     urls:
-    - https://github.com/FirelyTeam/Helm.Charts/blob/main/firely-server/firely-server-0.11.0.tgz
+    - https://github.com/FirelyTeam/Helm.Charts/releases/download/FS%2Fv0.11.0/firely-server-0.11.0.tgz
     version: 0.11.0
   firely-auth:
   - apiVersion: v2
@@ -266,7 +266,7 @@ entries:
     name: firely-auth
     type: application
     urls:
-    - https://github.com/FirelyTeam/Helm.Charts/blob/main/firely-auth/firely-auth-0.6.1.tgz
+    - https://github.com/FirelyTeam/Helm.Charts/releases/download/FA%2Fv0.6.1/firely-auth-0.6.1.tgz
     version: 0.6.1
   - apiVersion: v2
     appVersion: 4.1.1
@@ -282,7 +282,7 @@ entries:
     name: firely-auth
     type: application
     urls:
-    - https://github.com/FirelyTeam/Helm.Charts/blob/main/firely-auth/firely-auth-0.6.0.tgz
+    - https://github.com/FirelyTeam/Helm.Charts/releases/download/FA%2Fv0.6.0/firely-auth-0.6.0.tgz
     version: 0.6.0
   - apiVersion: v2
     appVersion: 3.3.1
@@ -298,7 +298,7 @@ entries:
     name: firely-auth
     type: application
     urls:
-    - https://github.com/FirelyTeam/Helm.Charts/blob/main/firely-auth/firely-auth-0.5.0.tgz
+    - https://github.com/FirelyTeam/Helm.Charts/releases/download/FA%2Fv0.5.0/firely-auth-0.5.0.tgz
     version: 0.5.0
   - apiVersion: v2
     appVersion: 3.3.1
@@ -314,7 +314,7 @@ entries:
     name: firely-auth
     type: application
     urls:
-    - https://github.com/FirelyTeam/Helm.Charts/blob/main/firely-auth/firely-auth-0.4.0.tgz
+    - https://github.com/FirelyTeam/Helm.Charts/releases/download/FA%2Fv0.4.0/firely-auth-0.4.0.tgz
     version: 0.4.0
   - apiVersion: v2
     appVersion: 3.0.0
@@ -330,7 +330,7 @@ entries:
     name: firely-auth
     type: application
     urls:
-    - https://github.com/FirelyTeam/Helm.Charts/blob/main/firely-auth/firely-auth-0.3.1.tgz
+    - https://github.com/FirelyTeam/Helm.Charts/releases/download/FA%2Fv0.3.1/firely-auth-0.3.1.tgz
     version: 0.3.1
   - apiVersion: v2
     appVersion: 3.0.0
@@ -346,7 +346,7 @@ entries:
     name: firely-auth
     type: application
     urls:
-    - https://github.com/FirelyTeam/Helm.Charts/blob/main/firely-auth/firely-auth-0.3.0.tgz
+    - https://github.com/FirelyTeam/Helm.Charts/releases/download/FA%2Fv0.3.0/firely-auth-0.3.0.tgz
     version: 0.3.0
   - apiVersion: v2
     appVersion: 3.0.0
@@ -362,6 +362,6 @@ entries:
     name: firely-auth
     type: application
     urls:
-    - https://github.com/FirelyTeam/Helm.Charts/blob/main/firely-auth/firely-auth-0.2.0.tgz
+    - https://github.com/FirelyTeam/Helm.Charts/releases/download/FA%2Fv0.2.0/firely-auth-0.2.0.tgz
     version: 0.2.0
 generated: "2025-02-10T10:02:46.701398166Z"

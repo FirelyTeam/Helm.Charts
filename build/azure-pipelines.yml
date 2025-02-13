@@ -16,6 +16,8 @@ variables:
     #value: $[startsWith(variables['Build.SourceBranch'], variables['RELEASE_TAG'])] #Release tag set in the UI variale e.g. 'refs/tags/FA/v'
   - name: helmVersion
     value: '3.17.0'
+  - name: artifactName
+    value: 'helm-packages'
 
 pool: 
   vmImage: 'ubuntu-latest'
@@ -37,7 +39,7 @@ stages:
         displayName: 'helm package'
 
       - publish: $(Build.ArtifactStagingDirectory)
-        artifact: 'helm-packages'
+        artifact: $(artifactName)
         displayName: 'Publish helm package artifact'
       
 
@@ -59,7 +61,7 @@ stages:
                 helmVersionToInstall: $(helmVersion)
             
             - download: current
-              artifact: 'helm-packages'
+              artifact: $(artifactName)
               displayName: 'Download helm package artifact'
 
             - script: |
@@ -67,12 +69,12 @@ stages:
                 build_source_branch='refs/tags/FS/v0.20.0'
 
                 # url encode tag name (like 'FS/v0.20.0' -> 'FS%2Fv0.20.0')
-                val=`printf %s ${$build_source_branch#'refs/tag/'} | jq -sRr @uri`
+                val=`printf %s ${build_source_branch#'refs/tag/'} | jq -sRr @uri`
                 echo 'tag_encoded: ' $val
                 echo "##vso[task.setvariable variable=tag_encoded;]val"
 
                 # release title (chart name and version, like 'firely-server-0.20.0')
-                files=($(Pipeline.Workspace)/*.tgz)
+                files=($(Pipeline.Workspace)/$(artifactName)/*.tgz)
                 val=`basename ${files[0]} .tgz`
                 echo 'release_titel: ' $val
                 echo "##vso[task.setvariable variable=release_titel;]val"

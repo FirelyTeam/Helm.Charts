@@ -15,8 +15,8 @@ This chart implements a [Firely Auth](https://fire.ly/products/firely-auth/) dep
 To install the chart with the release name `my-release`:
 
 ``` console
-$ helm repo add firely-auth https://raw.githubusercontent.com/FirelyTeam/Helm.Charts/main/firely-auth/
-$ helm install my-release firely-auth/firely-auth
+$ helm repo add firely https://firelyteam.github.io/Helm.Charts/
+$ helm install my-release firely/firely-auth
 ```
 The command deploys Firely Auth on the Kubernetes cluster in the default configuration. The configuration section lists the parameters that can be configured during installation.
 

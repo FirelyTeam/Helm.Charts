@@ -15,8 +15,8 @@ This chart implements a [Firely Server](https://fire.ly/products/firely-server/)
 To install the chart with the release name `my-release`:
 
 ``` console
-$ helm repo add firely-server https://raw.githubusercontent.com/FirelyTeam/Helm.Charts/main/firely-server/
-$ helm install my-release firely-server/firely-server
+$ helm repo add firely https://firelyteam.github.io/Helm.Charts/
+$ helm install my-release firely/firely-server
 ```
 The command deploys Firely Server on the Kubernetes cluster in the default configuration. The configuration section lists the parameters that can be configured during installation.
 

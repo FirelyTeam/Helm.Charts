@@ -6,7 +6,6 @@
 # Used variables: (set in the UI of the pipeline)
 # - RELEASE_TAG: pattern of the release tag, like 'refs/tags/FS/v'
 # - SOURCE_FOLDER: folder where the helm chart is located, for example './charts/firely-server/'
-# - TARGET_FOLDER: 'FA'
 # - TARGET_SITE: location where the packaged Helm chart can be downloaded, for example 'https://firelyteam.github.io/Helm.Charts/releases'
 
 name: $(date:yyyyMMdd)$(rev:.r)
@@ -67,7 +66,11 @@ stages:
             - script: |
                 # download the index.yaml file from https://firelyteam.github.io/Helm.Charts
                 curl -sS -o $(Pipeline.Workspace)/current-index.yaml https://firelyteam.github.io/Helm.Charts/index.yaml
-                helm repo index $(Pipeline.Workspace) --url $(TARGET_SITE)/ --merge $(Pipeline.Workspace)/current-index.yaml
+                tag_name='refs/tags/FS/v0.20.0'  # set the tag name for test purposes
+                # extract the tag from the branch name
+                tag_encoded=`printf %s ${$(Build.SourceBranch)#'refs/tag/'} | jq -sRr @uri`
+                helm repo index $(Pipeline.Workspace) --url $(TARGET_SITE)/$(tag_encoded) --merge $(Pipeline.Workspace)/current-index.yaml
+                cat $(Pipeline.Workspace)/index.yaml
               displayName: 'helm repo index'
 
             - task: GitHubRelease@1
@@ -78,9 +81,7 @@ stages:
                 action: 'create'
                 target: '$(Build.SourceVersion)'
                 tagSource: gitTag
-                tagPattern: 'v.*'
-                releaseNotesSource: filePath
-                releaseNotesFilePath: $(Build.SourcesDirectory)\release-notes.md
+                tagPattern: '$(RELEASE_TAG).*'
                 title: '$(release_title)'
                 isDraft: true
                 changeLogCompareToRelease: lastNonDraftRelease

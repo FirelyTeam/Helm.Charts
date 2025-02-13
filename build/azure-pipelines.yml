@@ -104,10 +104,12 @@ stages:
                 action: 'create'
                 target: '$(Build.SourceVersion)'
                 tagSource: gitTag
-                tagPattern: '$(release_tag)'
+                tagPattern: '$(tag_pattern)'
                 title: '$(release_title)'
                 isDraft: true
-                changeLogCompareToRelease: lastNonDraftRelease
+                addChangeLog: true
+                changeLogCompareToRelease: lastNonDraftReleaseByTag
+                changeLogCompareToReleaseTag: '$(tag_pattern)'
                 changeLogType: issueBased
                 changeLogLabels: '[{ "label" : "bug", "displayName" : "Bugfixes", "state" : "closed" },{ "label" : "enhancement", "displayName" : "New Functionality", "state" : "closed" }]'
                 assets: '$(Pipeline.Workspace)/$(artifactName)/*.tgz'

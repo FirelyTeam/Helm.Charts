@@ -108,8 +108,7 @@ stages:
                 title: '$(release_title)'
                 isDraft: true
                 addChangeLog: true
-                changeLogCompareToRelease: lastNonDraftReleaseByTag
-                changeLogCompareToReleaseTag: '$(release_tag)'
+                changeLogCompareToRelease: lastNonDraftRelease
                 changeLogType: issueBased
                 changeLogLabels: '[{ "label" : "bug", "displayName" : "Bugfixes", "state" : "closed" },{ "label" : "enhancement", "displayName" : "New Functionality", "state" : "closed" }]'
                 assets: '$(Pipeline.Workspace)/$(artifactName)/*.tgz'

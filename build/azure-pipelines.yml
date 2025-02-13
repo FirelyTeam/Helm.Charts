@@ -103,8 +103,8 @@ stages:
                 action: 'create'
                 target: '$(Build.SourceVersion)'
                 tagSource: gitTag
-                tagPattern: '$(tag_pattern)'
-                title: 'FS\/v.*'
+                tagPattern: 'FS\/v.*'
+                title: '$(release_title)'
                 isDraft: true
                 changeLogCompareToRelease: lastNonDraftRelease
                 changeLogType: issueBased

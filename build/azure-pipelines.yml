@@ -34,13 +34,6 @@ stages:
           helmVersionToInstall : $(helmVersion)
       
       - script: |
-          # create regex of the release tag (like '\/refs\/tags\/FS\/v.*')
-          release_tag=$(RELEASE_TAG)
-          val="${release_tag////'\'/}.*"
-          echo 'tag_pattern: ' $val
-        displayName: 'Setting variables'
-      
-      - script: |
           helm package $(SOURCE_FOLDER) --dependency-update --destination $(Build.ArtifactStagingDirectory)
         displayName: 'helm package'
 
@@ -84,8 +77,9 @@ stages:
                 echo 'release_titel: ' $val
                 echo "##vso[task.setvariable variable=release_titel;]$val"
 
-                # create regex of the release tag (like '\/refs\/tags\/FS\/v.*')
-                val="${$(RELEASE_TAG)////'\'/}.*"
+                # create regex of the release tag (like 'refs\/tags\/FS\/v.*')
+                release_tag=$(RELEASE_TAG)
+                val="${release_tag////'\'/}.*"
                 echo 'tag_pattern: ' $val
                 echo "##vso[task.setvariable variable=tag_pattern;]$val"
               displayName: 'Setting variables'

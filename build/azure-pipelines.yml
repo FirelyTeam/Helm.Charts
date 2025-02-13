@@ -83,7 +83,12 @@ stages:
             - script: |
                 # download the index.yaml file from https://firelyteam.github.io/Helm.Charts
                 curl -sS -o $(Pipeline.Workspace)/current-index.yaml https://firelyteam.github.io/Helm.Charts/index.yaml
-                helm repo index $(Pipeline.Workspace)/$(artifactName) --url $(TARGET_SITE)/$(tag_encoded) --merge $(Pipeline.Workspace)/current-index.yaml
+                
+                # Helm urldecodes the url, so we need to use a placeholder
+                placeholder='__TAG__'
+                helm repo index $(Pipeline.Workspace)/$(artifactName) --url $(TARGET_SITE)/$placeholder --merge $(Pipeline.Workspace)/current-index.yaml
+                # replace the placeholder with the encoded tag
+                sed -i 's/$placeholder/$(tag_encoded)/g' $(Pipeline.Workspace)/$(artifactName)/index.yaml
                 cat $(Pipeline.Workspace)/$(artifactName)/index.yaml
               displayName: 'helm repo index'
 

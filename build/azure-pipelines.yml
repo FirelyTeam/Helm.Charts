@@ -74,8 +74,8 @@ stages:
                 # release title (chart name and version, like 'firely-server-0.20.0')
                 files=($(Pipeline.Workspace)/$(artifactName)/*.tgz)
                 val=`basename ${files[0]} .tgz`
-                echo 'release_titel: ' $val
-                echo "##vso[task.setvariable variable=release_titel;]$val"
+                echo 'release_title: ' $val
+                echo "##vso[task.setvariable variable=release_title;]$val"
 
                 # create regex of the release tag (like 'refs\/tags\/FS\/v.*')
                 release_tag=$(RELEASE_TAG)
@@ -109,7 +109,7 @@ stages:
                 changeLogCompareToRelease: lastNonDraftRelease
                 changeLogType: issueBased
                 changeLogLabels: '[{ "label" : "bug", "displayName" : "Bugfixes", "state" : "closed" },{ "label" : "enhancement", "displayName" : "New Functionality", "state" : "closed" }]'
-                assets: '$(Pipeline.Workspace)/*.tgz'
+                assets: '$(Pipeline.Workspace)/$(artifactName)/*.tgz'
 
 
 

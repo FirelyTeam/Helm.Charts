@@ -28,27 +28,6 @@ stages:
     - job: PackageHelmChart
       displayName: 'Package Helm Chart'
       steps:
-      - script: |
-          # Show defined variables
-          echo 'Build.Repository.Provider: $(Build.Repository.Provider)'
-          echo 'Build.Repository.LocalPath: $(Build.Repository.LocalPath)'
-          echo 'Build.Repository.Name: $(Build.Repository.Name)'  
-          echo 'Build.Repository.Uri: $(Build.Repository.Uri)'
-          echo 'Build.BuildUri: $(Build.BuildUri)'
-          echo 'Build.SourceBranch: $(Build.SourceBranch)'
-          echo 'Build.SourceVersion: $(Build.SourceVersion)'
-          echo 'Build.SourceBranchName: $(Build.SourceBranchName)'
-          echo 'System.DefaultWorkingDirectory: $(System.DefaultWorkingDirectory)'
-          echo 'content of $(Build.SourcesDirectory):'
-          ls -laR $(Build.SourcesDirectory)/*
-
-          echo 'Build.StagingDirectory: $(Build.StagingDirectory)'
-          echo 'Pipeline.Workspace:' $(Pipeline.Workspace)
-          echo 'content of $(Pipeline.Workspace):'
-          ls -laR $(Pipeline.Workspace)/*
-
-        displayName: Showing defined variables  
-
       - task: HelmInstaller@1
         displayName: 'Install Helm $(helmVersion)'
         inputs:
@@ -76,6 +55,7 @@ stages:
             steps:
             - script: |
                 # Show defined variables
+                echo 'Build.RequestedForEmail: $(Build.RequestedForEmail)'
                 echo 'Build.Repository.Provider: $(Build.Repository.Provider)'
                 echo 'Build.Repository.LocalPath: $(Build.Repository.LocalPath)'
                 echo 'Build.Repository.Name: $(Build.Repository.Name)'  
@@ -130,7 +110,7 @@ stages:
                 
                 # Helm urldecodes the url, so we need to use a placeholder
                 placeholder='__TAG__'
-                helm repo index $(Pipeline.Workspace)/$(artifactName) --url $(TARGET_SITE)/$placeholder --merge $(Pipeline.Workspace)/current-index.yaml
+                helm repo index $(Pipeline.Workspace)/$(artifactName) --url $(TARGET_SITE)TEST/$placeholder --merge $(Pipeline.Workspace)/current-index.yaml
                 # replace the placeholder with the encoded tag
                 sed -i "s/$placeholder/$(tag_encoded)/g" $(Pipeline.Workspace)/$(artifactName)/index.yaml
               displayName: 'helm repo index'
@@ -154,21 +134,21 @@ stages:
 
             - script: |
                 # create pull request for index.yaml
-                git config --local user.email ""
+                git config --local user.email "$(Build.RequestedForEmail)"
                 git config --local user.name "Azure DevOps"
-                git clone --branch gh-pages
-                git checkout -b $BRANCH_NAME
-                git add $(Pipeline.Workspace)/$(artifactName)/index.yaml
-                git commit -m "Update index.yaml"
-                git push origin update-index
-                gh pr create --base gh-pages --head "$BRANCH_NAME" --title "Update SUSHI_VERSION to $LATEST_RELEASE" --body "This PR updates the SUSHI_VERSION to $LATEST_RELEASE."
+                git clone --branch $BASE_BRANCH $(Build.Repository.Uri) $(Pipeline.Workspace)/pr
+                cd $(Pipeline.Workspace)/pr
+                git checkout -b $PR_BRANCH_NAME
+                cp $(Pipeline.Workspace)/$(artifactName)/index.yaml $(Pipeline.Workspace)/pr/index.yaml
+                git add $(Pipeline.Workspace)/pr/index.yaml
+                git commit -m "Update index.yaml for release '$(release_title)'"
+                git push origin $PR_BRANCH_NAME
+                gh pr create --base "$BASE_BRANCH" --head "$PR_BRANCH_NAME" --title "Update Helm Chart index.yam to $(release_title)" --body "This PR updates the Helm Chart index (index.yaml) to the latest release '$(release_title)'."
               displayName: 'Create pull request'
-              condition: false
               env:
                 GITHUB_TOKEN: $(GITHUB_TOKEN)
-                BRANCH_NAME: update-index
-                LATEST_RELEASE: $(tag_encoded)
-                GH_REPO: FirelyTeam/Helm.Charts
+                BASE_BRANCH: 'gh-pages'
+                PR_BRANCH_NAME: 'update-index'
 
 
 

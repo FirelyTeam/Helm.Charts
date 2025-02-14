@@ -144,10 +144,10 @@ stages:
                 git init $(Pipeline.Workspace)/pr
                 echo 'git remote add origin $(Build.Repository.Uri)'
                 git remote add origin $(Build.Repository.Uri)
-                echo 'git config --global user.email "$(Build.RequestedForEmail)"'
-                git config --global user.email "$(Build.RequestedForEmail)"
-                echo 'git config --global user.name "$(Build.RequestedFor)"'
-                git config --global user.name "$(Build.RequestedFor)"
+                echo 'git config --global user.email "pipelines@azure.com"'
+                git config --global user.email "pipelines@azure.com"
+                echo 'git config --global user.name "Azure Pipelines"'
+                git config --global user.name "Azure Pipelines"
                 echo 'git clone --branch $BASE_BRANCH $(Build.Repository.Uri)'
                 git clone --branch $BASE_BRANCH $(Build.Repository.Uri)
                 cd Helm.Charts
@@ -160,8 +160,8 @@ stages:
                 git add index.yaml
                 echo 'git commit -m "Update index.yaml for release '$(release_title)'"'
                 git commit -m "Update index.yaml for release '$(release_title)'"
-                echo 'git push origin $PR_BRANCH_NAME'
-                git push origin $PR_BRANCH_NAME
+                echo 'git push origin'
+                git push origin
                 echo 'gh pr create --title "Update Helm Chart index.yam to $(release_title)" --body "This PR updates the Helm Chart index (index.yaml) to the latest release '$(release_title)'."'	
                 gh pr create --title "Update Helm Chart index.yam to $(release_title)" --body "This PR updates the Helm Chart index (index.yaml) to the latest release '$(release_title)'."
               displayName: 'Create pull request'

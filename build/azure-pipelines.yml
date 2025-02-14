@@ -56,6 +56,8 @@ stages:
             - script: |
                 # Show defined variables
                 echo 'Build.RequestedForEmail: $(Build.RequestedForEmail)'
+                echo 'Build.RequestedFor: $(Build.RequestedFor)'
+                echo 'Build.RequestedForId: $(Build.RequestedForId)'
                 echo 'Build.Repository.Provider: $(Build.Repository.Provider)'
                 echo 'Build.Repository.LocalPath: $(Build.Repository.LocalPath)'
                 echo 'Build.Repository.Name: $(Build.Repository.Name)'  
@@ -134,8 +136,8 @@ stages:
 
             - script: |
                 # create pull request for index.yaml
-                git config --local user.email "$(Build.RequestedForEmail)"
-                git config --local user.name "Azure DevOps"
+                git config --global user.email "$(Build.RequestedForEmail)"
+                git config --global user.name "Azure DevOps"
                 git clone --branch $BASE_BRANCH $(Build.Repository.Uri) $(Pipeline.Workspace)/pr
                 cd $(Pipeline.Workspace)/pr
                 git checkout -b $PR_BRANCH_NAME

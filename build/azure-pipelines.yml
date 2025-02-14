@@ -137,7 +137,7 @@ stages:
             - script: |
                 # create pull request for index.yaml
                 git config --global user.email "$(Build.RequestedForEmail)"
-                git config --global user.name "Azure DevOps"
+                git config --global user.name "$(Build.RequestedFor)"
                 git clone --branch $BASE_BRANCH $(Build.Repository.Uri) $(Pipeline.Workspace)/pr
                 cd $(Pipeline.Workspace)/pr
                 git checkout -b $PR_BRANCH_NAME
@@ -148,7 +148,7 @@ stages:
                 gh pr create --base "$BASE_BRANCH" --head "$PR_BRANCH_NAME" --title "Update Helm Chart index.yam to $(release_title)" --body "This PR updates the Helm Chart index (index.yaml) to the latest release '$(release_title)'."
               displayName: 'Create pull request'
               env:
-                GITHUB_TOKEN: $(GITHUB_TOKEN)
+                GITHUB_TOKEN: $(RELEASE_GIT_TOKEN)
                 BASE_BRANCH: 'gh-pages'
                 PR_BRANCH_NAME: 'update-index'
 

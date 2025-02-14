@@ -117,9 +117,11 @@ stages:
                 echo 'create git directory'
                 mkdir -p $(Pipeline.Workspace)/pr
                 echo 'cd $(Pipeline.Workspace)/pr'
-                cd $(Pipeline.Workspace)/pr
+                cd $(Pipeline.Workspace)/pr                
                 echo 'git init $(Pipeline.Workspace)/pr'
-                git init $(Pipeline.Workspace)/pr
+                git init $(Pipeline.Workspace)/pr                
+                echo 'git remote add origin $(Build.Repository.Uri)'
+                git remote add origin $(Build.Repository.Uri)
                 echo 'git remote set-url origin https://$GITHUB_TOKEN@github.com/FirelyTeam/Helm.Charts'
                 git remote set-url origin https://$GITHUB_TOKEN@github.com/FirelyTeam/Helm.Charts
                 echo 'git config --global user.email "pipelines@azure.com"'

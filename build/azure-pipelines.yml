@@ -28,6 +28,25 @@ stages:
     - job: PackageHelmChart
       displayName: 'Package Helm Chart'
       steps:
+      - script: |
+          # Show defined variables
+          echo 'Build.Repository.Provider: $(Build.Repository.Provider)'
+          echo 'Build.Repository.LocalPath: $(Build.Repository.LocalPath)'
+          echo 'Build.Repository.Name: $(Build.Repository.Name)'  
+          echo 'Build.Repository.Uri: $(Build.Repository.Uri)'
+          echo 'Build.BuildUri: $(Build.BuildUri)'
+          echo 'Build.SourceBranch: $(Build.SourceBranch)'
+          echo 'Build.SourceVersion: $(Build.SourceVersion)'
+          echo 'Build.SourceBranchName: $(Build.SourceBranchName)'
+          echo 'System.DefaultWorkingDirectory: $(System.DefaultWorkingDirectory)'
+          echo 'content of $(Build.SourcesDirectory):'
+          ls -laR $(Build.SourcesDirectory)/*
+
+          echo 'Build.StagingDirectory: $(Build.StagingDirectory)'
+          echo 'content of $(Build.StagingDirectory):'
+          ls -laR $(Build.StagingDirectory)/*
+        displayName: Showing defined variables  
+
       - task: HelmInstaller@1
         displayName: 'Install Helm $(helmVersion)'
         inputs:
@@ -41,7 +60,6 @@ stages:
         artifact: $(artifactName)
         displayName: 'Publish helm package artifact'
       
-
 - stage: DeployHelmPackage
   displayName: 'Deploy Helm Package'
   dependsOn: PackageHelmChart
@@ -54,6 +72,24 @@ stages:
         runOnce:
           deploy:   
             steps:
+            - script: |
+                # Show defined variables
+                echo 'Build.Repository.Provider: $(Build.Repository.Provider)'
+                echo 'Build.Repository.LocalPath: $(Build.Repository.LocalPath)'
+                echo 'Build.Repository.Name: $(Build.Repository.Name)'  
+                echo 'Build.Repository.Uri: $(Build.Repository.Uri)'
+                echo 'Build.BuildUri: $(Build.BuildUri)'
+                echo 'Build.SourceBranch: $(Build.SourceBranch)'
+                echo 'Build.SourceVersion: $(Build.SourceVersion)'
+                echo 'Build.SourceBranchName: $(Build.SourceBranchName)'
+                echo 'System.DefaultWorkingDirectory: $(System.DefaultWorkingDirectory)'
+                echo 'content of $(Build.SourcesDirectory):'
+                ls -laR $(Build.SourcesDirectory)/*
+
+                echo 'Build.StagingDirectory: $(Build.StagingDirectory)'
+                echo 'content of $(Build.StagingDirectory):'
+                ls -laR $(Build.StagingDirectory)/*
+              displayName: Showing defined variables  
             - task: HelmInstaller@1
               displayName: 'Install Helm $(helmVersion)'
               inputs:
@@ -110,11 +146,26 @@ stages:
                 addChangeLog: true
                 changeLogCompareToRelease: lastNonDraftReleaseByTag
                 changeLogCompareToReleaseTag: '$(tag_pattern)'
-                changeLogType: issueBased
-                changeLogLabels: '[{ "label" : "bug", "displayName" : "Bugfixes", "state" : "closed" },{ "label" : "enhancement", "displayName" : "New Functionality", "state" : "closed" }]'
+                changeLogType: commitBased
                 assets: '$(Pipeline.Workspace)/$(artifactName)/*.tgz'
 
-
+            - script: |
+                # create pull request for index.yaml
+                git config --local user.email ""
+                git config --local user.name "Azure DevOps"
+                git clone --branch gh-pages
+                git checkout -b $BRANCH_NAME
+                git add $(Pipeline.Workspace)/$(artifactName)/index.yaml
+                git commit -m "Update index.yaml"
+                git push origin update-index
+                gh pr create --base gh-pages --head "$BRANCH_NAME" --title "Update SUSHI_VERSION to $LATEST_RELEASE" --body "This PR updates the SUSHI_VERSION to $LATEST_RELEASE."
+              displayName: 'Create pull request'
+              condition: false
+              env:
+                GITHUB_TOKEN: $(GITHUB_TOKEN)
+                BRANCH_NAME: update-index
+                LATEST_RELEASE: $(tag_encoded)
+                GH_REPO: FirelyTeam/Helm.Charts
 
 
 

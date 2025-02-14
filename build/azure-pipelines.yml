@@ -154,10 +154,10 @@ stages:
                 ls -laR .
                 echo 'git checkout -b $PR_BRANCH_NAME'
                 git checkout -b $PR_BRANCH_NAME
-                echo 'cp $(Pipeline.Workspace)/$(artifactName)/index.yaml $(Pipeline.Workspace)/pr/index.yaml'
-                cp $(Pipeline.Workspace)/$(artifactName)/index.yaml $(Pipeline.Workspace)/pr/index.yaml
-                echo 'git add $(Pipeline.Workspace)/pr/index.yaml'
-                git add $(Pipeline.Workspace)/pr/index.yaml
+                echo 'cp $(Pipeline.Workspace)/$(artifactName)/index.yaml .'
+                cp $(Pipeline.Workspace)/$(artifactName)/index.yaml .
+                echo 'git add index.yaml'
+                git add index.yaml
                 echo 'git commit -m "Update index.yaml for release '$(release_title)'"'
                 git commit -m "Update index.yaml for release '$(release_title)'"
                 echo 'git push origin $PR_BRANCH_NAME'

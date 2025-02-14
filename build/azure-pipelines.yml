@@ -53,28 +53,6 @@ stages:
         runOnce:
           deploy:   
             steps:
-            - script: |
-                # Show defined variables
-                echo 'Build.RequestedForEmail: $(Build.RequestedForEmail)'
-                echo 'Build.RequestedFor: $(Build.RequestedFor)'
-                echo 'Build.RequestedForId: $(Build.RequestedForId)'
-                echo 'Build.Repository.Provider: $(Build.Repository.Provider)'
-                echo 'Build.Repository.LocalPath: $(Build.Repository.LocalPath)'
-                echo 'Build.Repository.Name: $(Build.Repository.Name)'  
-                echo 'Build.Repository.Uri: $(Build.Repository.Uri)'
-                echo 'Build.BuildUri: $(Build.BuildUri)'
-                echo 'Build.SourceBranch: $(Build.SourceBranch)'
-                echo 'Build.SourceVersion: $(Build.SourceVersion)'
-                echo 'Build.SourceBranchName: $(Build.SourceBranchName)'
-                echo 'System.DefaultWorkingDirectory: $(System.DefaultWorkingDirectory)'
-                echo 'content of $(Build.SourcesDirectory):'
-                ls -laR $(Build.SourcesDirectory)/*
-
-                echo 'Build.StagingDirectory: $(Build.StagingDirectory)'
-                echo 'Pipeline.Workspace:' $(Pipeline.Workspace)
-                echo 'content of $(Pipeline.Workspace):'
-                ls -laR $(Pipeline.Workspace)/*
-              displayName: Showing defined variables  
             - task: HelmInstaller@1
               displayName: 'Install Helm $(helmVersion)'
               inputs:
@@ -142,8 +120,8 @@ stages:
                 cd $(Pipeline.Workspace)/pr
                 echo 'git init $(Pipeline.Workspace)/pr'
                 git init $(Pipeline.Workspace)/pr
-                echo 'git remote add origin $(Build.Repository.Uri)'
-                git remote add origin $(Build.Repository.Uri)
+                echo 'git remote set-url origin https://$GITHUB_TOKEN@github.com/FirelyTeam/Helm.Charts'
+                git remote set-url origin https://$GITHUB_TOKEN@github.com/FirelyTeam/Helm.Charts
                 echo 'git config --global user.email "pipelines@azure.com"'
                 git config --global user.email "pipelines@azure.com"
                 echo 'git config --global user.name "Azure Pipelines"'

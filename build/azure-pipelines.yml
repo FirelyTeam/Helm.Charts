@@ -150,6 +150,7 @@ stages:
                 git config --global user.name "$(Build.RequestedFor)"
                 echo 'git clone --branch $BASE_BRANCH $(Build.Repository.Uri)'
                 git clone --branch $BASE_BRANCH $(Build.Repository.Uri)
+                cd Helm.Charts
                 ls -laR .
                 echo 'git checkout -b $PR_BRANCH_NAME'
                 git checkout -b $PR_BRANCH_NAME

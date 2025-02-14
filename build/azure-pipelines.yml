@@ -136,15 +136,27 @@ stages:
 
             - script: |
                 # create pull request for index.yaml
+                echo 'git remote add origin $(Build.Repository.Uri)'
+                git remote add origin $(Build.Repository.Uri)
+                echo 'git config --global user.email "$(Build.RequestedForEmail)"'
                 git config --global user.email "$(Build.RequestedForEmail)"
+                echo 'git config --global user.name "$(Build.RequestedFor)"'
                 git config --global user.name "$(Build.RequestedFor)"
-                git clone --branch $BASE_BRANCH $(Build.Repository.Uri) $(Pipeline.Workspace)/pr
+                echo 'git clone --branch $BASE_BRANCH $(Pipeline.Workspace)/pr'
+                git clone --branch $BASE_BRANCH $(Pipeline.Workspace)/pr
+                echo 'cd $(Pipeline.Workspace)/pr'
                 cd $(Pipeline.Workspace)/pr
+                echo 'git checkout -b $PR_BRANCH_NAME'
                 git checkout -b $PR_BRANCH_NAME
+                echo 'cp $(Pipeline.Workspace)/$(artifactName)/index.yaml $(Pipeline.Workspace)/pr/index.yaml'
                 cp $(Pipeline.Workspace)/$(artifactName)/index.yaml $(Pipeline.Workspace)/pr/index.yaml
+                echo 'git add $(Pipeline.Workspace)/pr/index.yaml'
                 git add $(Pipeline.Workspace)/pr/index.yaml
+                echo 'git commit -m "Update index.yaml for release '$(release_title)'"'
                 git commit -m "Update index.yaml for release '$(release_title)'"
+                echo 'git push origin $PR_BRANCH_NAME'
                 git push origin $PR_BRANCH_NAME
+                echo 'gh pr create --base $BASE_BRANCH --head $PR_BRANCH_NAME --title "Update Helm Chart index.yam to $(release_title)" --body "This PR updates the Helm Chart index (index.yaml) to the latest release '$(release_title)'."'	
                 gh pr create --base "$BASE_BRANCH" --head "$PR_BRANCH_NAME" --title "Update Helm Chart index.yam to $(release_title)" --body "This PR updates the Helm Chart index (index.yaml) to the latest release '$(release_title)'."
               displayName: 'Create pull request'
               env:

@@ -43,8 +43,10 @@ stages:
           ls -laR $(Build.SourcesDirectory)/*
 
           echo 'Build.StagingDirectory: $(Build.StagingDirectory)'
-          echo 'content of $(Build.StagingDirectory):'
-          ls -laR $(Build.StagingDirectory)/*
+          echo 'Pipeline.Workspace:' $(Pipeline.Workspace)
+          echo 'content of $(Pipeline.Workspace):'
+          ls -laR $(Pipeline.Workspace)/*
+
         displayName: Showing defined variables  
 
       - task: HelmInstaller@1
@@ -87,8 +89,9 @@ stages:
                 ls -laR $(Build.SourcesDirectory)/*
 
                 echo 'Build.StagingDirectory: $(Build.StagingDirectory)'
-                echo 'content of $(Build.StagingDirectory):'
-                ls -laR $(Build.StagingDirectory)/*
+                echo 'Pipeline.Workspace:' $(Pipeline.Workspace)
+                echo 'content of $(Pipeline.Workspace):'
+                ls -laR $(Pipeline.Workspace)/*
               displayName: Showing defined variables  
             - task: HelmInstaller@1
               displayName: 'Install Helm $(helmVersion)'

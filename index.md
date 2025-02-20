@@ -15,11 +15,13 @@ helm repo add firely https://firelyteam.github.io/Helm.Charts
 ```bash
 helm upgrade --install firely-server firely/firely-server
 ```
-For more details on installing Firely Server please see the chart's README.
+
+For more details on installing Firely Server please see the [chart's README](https://github.com/FirelyTeam/Helm.Charts/tree/main/charts/firely-server/README.md).
 
 ## Install Firely Auth
 
 ```bash
 helm upgrade --install firely-auth firely/firely-auth
 ```
-For more details on installing Firely Auth please see the chart's README.
+
+For more details on installing Firely Auth please see the [chart's README](https://github.com/FirelyTeam/Helm.Charts/tree/main/charts/firely-auth/README.md).

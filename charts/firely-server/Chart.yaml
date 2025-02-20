@@ -1,0 +1,27 @@
+apiVersion: v2
+appVersion: "5.11.0"
+version: "0.19.0"
+kubeVersion: ">= 1.19"
+name: firely-server
+description: Firely Server is an enterprise-grade FHIR server meant for production environments large and small alike. 
+home: https://fire.ly/products/firely-server/
+icon: https://fire.ly/wp-content/uploads/2021/09/ICONS_FIRELY_02-04.svg
+maintainers:
+  - name: Louis Latour
+    email: louis@fire.ly
+    url: https://fire.ly
+type: application
+
+dependencies:
+  - name: influxdb2
+    version: "2.1.2"
+    repository: "https://helm.influxdata.com/"
+    condition: influxdb2.enabled
+  - name: telegraf
+    version: "1.8.48"
+    repository: "https://helm.influxdata.com/"
+    condition: telegraf.enabled
+  - name: opentelemetry-collector
+    version: "0.90.1"
+    repository: "https://open-telemetry.github.io/opentelemetry-helm-charts"
+    condition: opentelemetry-collector.enabled

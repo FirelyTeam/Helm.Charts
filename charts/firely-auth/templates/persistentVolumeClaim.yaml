@@ -1,0 +1,16 @@
+{{- if and .Values.persistence.enabled (not .Values.persistence.existingPVClaim) }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ include "firely-auth.fullname" . }}-claim
+  labels:
+    app.kubernetes.io/name: {{ include "firely-auth.name" . }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: azurefile-csi
+  volumeName: {{ include "firely-auth.fullname" . }}-storage-volume
+  resources:
+    requests:
+      storage: 1Gi
+{{- end }}

@@ -122,7 +122,7 @@ stages:
                     git config --global user.email $(git_emailaddress)
                     git config --global user.name $(git_user)
                     git add index.yaml
-                    git commit -m Update index.yaml for release '$(release_title)'" --no-gpg-sign
+                    git commit -m "Update index.yaml for release '$(release_title)'" --no-gpg-sign
                     git push
                     gh pr create --title "Update Helm Chart index.yam to $(release_title)" --body "This PR updates the Helm Chart index.yaml to the latest release $(release_title)."
                   displayName: "Create pull request"

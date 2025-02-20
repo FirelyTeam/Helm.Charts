@@ -11,153 +11,160 @@
 name: $(date:yyyyMMdd)$(rev:.r)
 
 variables:
+  - group: Git credentials
   - name: isReleaseTag
     value: $[startsWith(variables['Build.SourceBranch'], variables['RELEASE_TAG'])] #Release tag set in the UI variale e.g. 'refs/tags/FA/v'
   - name: helmVersion
-    value: '3.17.0'
+    value: "3.17.0"
   - name: artifactName
-    value: 'helm-packages'
+    value: "helm-packages"
 
-pool: 
-  vmImage: 'ubuntu-latest'
+pool:
+  vmImage: "ubuntu-latest"
 
 stages:
-- stage: PackageHelmChart
-  displayName: 'Package Helm Chart'
-  jobs:
-    - job: PackageHelmChart
-      displayName: 'Package Helm Chart'
-      steps:
-      - task: HelmInstaller@1
-        displayName: 'Install Helm $(helmVersion)'
-        inputs:
-          helmVersionToInstall : $(helmVersion)
-      
-      - script: |
-          helm package $(SOURCE_FOLDER) --dependency-update --destination $(Build.ArtifactStagingDirectory)
-        displayName: 'helm package'
+  - stage: PackageHelmChart
+    displayName: "Package Helm Chart"
+    jobs:
+      - job: PackageHelmChart
+        displayName: "Package Helm Chart"
+        steps:
+          - task: HelmInstaller@1
+            displayName: "Install Helm $(helmVersion)"
+            inputs:
+              helmVersionToInstall: $(helmVersion)
 
-      - publish: $(Build.ArtifactStagingDirectory)
-        artifact: $(artifactName)
-        displayName: 'Publish helm package artifact'
-      
-- stage: DeployHelmPackage
-  displayName: 'Deploy Helm Package'
-  dependsOn: PackageHelmChart
-  condition: eq(variables.isReleaseTag, true) 
-  jobs:
-    - deployment: DeployHelmPackage
-      environment: 'HelmChartsGitHub'
-      displayName: 'Deploy Helm Chart'   
-      strategy:
-        runOnce:
-          deploy:   
-            steps:
-            - task: HelmInstaller@1
-              displayName: 'Install Helm $(helmVersion)'
-              inputs:
-                helmVersionToInstall: $(helmVersion)
-            
-            - download: current
-              artifact: $(artifactName)
-              displayName: 'Download helm package artifact'
+          - script: |
+              helm package $(SOURCE_FOLDER) --dependency-update --destination $(Build.ArtifactStagingDirectory)
+            displayName: "helm package"
 
-            - script: |
-                build_source_branch=$(Build.SourceBranch)
+          - publish: $(Build.ArtifactStagingDirectory)
+            artifact: $(artifactName)
+            displayName: "Publish helm package artifact"
 
-                # url encode tag name (like 'FS/v0.20.0' -> 'FS%2Fv0.20.0')
-                val=`printf %s ${build_source_branch#'refs/tags/'} | jq -sRr @uri`
-                echo 'tag_encoded: ' $val
-                echo "##vso[task.setvariable variable=tag_encoded;]$val"
+  - stage: DeployHelmPackage
+    displayName: "Deploy Helm Package"
+    dependsOn: PackageHelmChart
+    condition: eq(variables.isReleaseTag, true)
+    jobs:
+      - deployment: DeployHelmPackage
+        environment: "HelmChartsGitHub"
+        displayName: "Deploy Helm Chart"
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: HelmInstaller@1
+                  displayName: "Install Helm $(helmVersion)"
+                  inputs:
+                    helmVersionToInstall: $(helmVersion)
 
-                # release title (chart name and version, like 'firely-server-0.20.0')
-                files=($(Pipeline.Workspace)/$(artifactName)/*.tgz)
-                val=`basename ${files[0]} .tgz`
-                echo 'release_title: ' $val
-                echo "##vso[task.setvariable variable=release_title;]$val"
+                - download: current
+                  artifact: $(artifactName)
+                  displayName: "Download helm package artifact"
 
-                # create regex of the release tag (like 'refs\/tags\/FS\/v.*')
-                release_tag=$(RELEASE_TAG)
-                release_tag=`printf %s ${release_tag#'refs/tags/'}`
-                val="${release_tag////'\'/}.*"
-                echo 'tag_pattern: ' $val
-                echo "##vso[task.setvariable variable=tag_pattern;]$val"
-              displayName: 'Setting variables'
-  
-            - script: |
-                # download the index.yaml file from https://firelyteam.github.io/Helm.Charts
-                curl -sS -o $(Pipeline.Workspace)/current-index.yaml https://firelyteam.github.io/Helm.Charts/index.yaml
-                
-                # Helm urldecodes the url, so we need to use a placeholder
-                placeholder='__TAG__'
-                helm repo index $(Pipeline.Workspace)/$(artifactName) --url $(TARGET_SITE)TEST/$placeholder --merge $(Pipeline.Workspace)/current-index.yaml
-                # replace the placeholder with the encoded tag
-                sed -i "s/$placeholder/$(tag_encoded)/g" $(Pipeline.Workspace)/$(artifactName)/index.yaml
-              displayName: 'helm repo index'
+                - script: |
+                    build_source_branch=$(Build.SourceBranch)
 
-            - task: GitHubRelease@1
-              displayName: 'GitHub release (create)'  
-              inputs:
-                gitHubConnection: 'GitHub Helm.Charts release'
-                repositoryName: '$(Build.Repository.Name)'
-                action: 'create'
-                target: '$(Build.SourceVersion)'
-                tagSource: gitTag
-                tagPattern: '$(tag_pattern)'
-                title: '$(release_title)'
-                isDraft: true
-                addChangeLog: true
-                changeLogCompareToRelease: lastNonDraftReleaseByTag
-                changeLogCompareToReleaseTag: '$(tag_pattern)'
-                changeLogType: commitBased
-                assets: '$(Pipeline.Workspace)/$(artifactName)/*.tgz'
+                    # url encode tag name (like 'FS/v0.20.0' -> 'FS%2Fv0.20.0')
+                    val=`printf %s ${build_source_branch#'refs/tags/'} | jq -sRr @uri`
+                    echo 'tag_encoded: ' $val
+                    echo "##vso[task.setvariable variable=tag_encoded;]$val"
 
-            - script: |
-                # create pull request for index.yaml
-                echo 'create git directory'
-                mkdir -p $(Pipeline.Workspace)/pr
-                echo 'cd $(Pipeline.Workspace)/pr'
-                cd $(Pipeline.Workspace)/pr                
-                echo 'git init $(Pipeline.Workspace)/pr'
-                git init $(Pipeline.Workspace)/pr                
-                echo 'git remote add origin $(Build.Repository.Uri)'
-                git remote add origin $(Build.Repository.Uri)
-                echo 'git remote set-url origin https://$GITHUB_TOKEN@github.com/FirelyTeam/Helm.Charts'
-                git remote set-url origin https://$GITHUB_TOKEN@github.com/FirelyTeam/Helm.Charts
-                echo 'git config --global user.email "pipelines@azure.com"'
-                git config --global user.email "pipelines@azure.com"
-                echo 'git config --global user.name "Azure Pipelines"'
-                git config --global user.name "Azure Pipelines"
-                echo 'git clone --branch $BASE_BRANCH $(Build.Repository.Uri)'
-                git clone --branch $BASE_BRANCH $(Build.Repository.Uri)
-                cd Helm.Charts
-                ls -laR .
-                echo 'git checkout -b $PR_BRANCH_NAME'
-                git checkout -b $PR_BRANCH_NAME
-                echo 'cp $(Pipeline.Workspace)/$(artifactName)/index.yaml .'
-                cp $(Pipeline.Workspace)/$(artifactName)/index.yaml .
-                echo 'git add index.yaml'
-                git add index.yaml
-                echo 'git commit -m "Update index.yaml for release '$(release_title)'"'
-                git commit -m "Update index.yaml for release '$(release_title)'"
-                echo 'git push --set-upstream origin $PR_BRANCH_NAME'
-                git push --set-upstream origin $PR_BRANCH_NAME
-                echo 'gh pr create --title "Update Helm Chart index.yam to $(release_title)" --body "This PR updates the Helm Chart index (index.yaml) to the latest release '$(release_title)'."'	
-                gh pr create --title "Update Helm Chart index.yam to $(release_title)" --body "This PR updates the Helm Chart index (index.yaml) to the latest release '$(release_title)'."
-              displayName: 'Create pull request'
-              env:
-                GITHUB_TOKEN: $(RELEASE_GIT_TOKEN)
-                BASE_BRANCH: 'gh-pages'
-                PR_BRANCH_NAME: 'update-index'
+                    # release title (chart name and version, like 'firely-server-0.20.0')
+                    files=($(Pipeline.Workspace)/$(artifactName)/*.tgz)
+                    val=`basename ${files[0]} .tgz`
+                    echo 'release_title: ' $val
+                    echo "##vso[task.setvariable variable=release_title;]$val"
 
+                    # create regex of the release tag (like 'refs\/tags\/FS\/v.*')
+                    release_tag=$(RELEASE_TAG)
+                    release_tag=`printf %s ${release_tag#'refs/tags/'}`
+                    val="${release_tag////'\'/}.*"
+                    echo 'tag_pattern: ' $val
+                    echo "##vso[task.setvariable variable=tag_pattern;]$val"
+                  displayName: "Setting variables"
 
+                - script: |
+                    # download the index.yaml file from https://firelyteam.github.io/Helm.Charts
+                    curl -sS -o $(Pipeline.Workspace)/current-index.yaml https://firelyteam.github.io/Helm.Charts/index.yaml
 
+                    # Helm urldecodes the url, so we need to use a placeholder
+                    placeholder='__TAG__'
+                    helm repo index $(Pipeline.Workspace)/$(artifactName) --url $(TARGET_SITE)TEST/$placeholder --merge $(Pipeline.Workspace)/current-index.yaml
+                    # replace the placeholder with the encoded tag
+                    sed -i "s/$placeholder/$(tag_encoded)/g" $(Pipeline.Workspace)/$(artifactName)/index.yaml
+                  displayName: "helm repo index"
 
+                - task: GitHubRelease@1
+                  displayName: "GitHub release (create)"
+                  inputs:
+                    gitHubConnection: "GitHub Helm.Charts release"
+                    repositoryName: "$(Build.Repository.Name)"
+                    action: "create"
+                    target: "$(Build.SourceVersion)"
+                    tagSource: gitTag
+                    tagPattern: "$(tag_pattern)"
+                    title: "$(release_title)"
+                    isDraft: true
+                    addChangeLog: true
+                    changeLogCompareToRelease: lastNonDraftReleaseByTag
+                    changeLogCompareToReleaseTag: "$(tag_pattern)"
+                    changeLogType: commitBased
+                    assets: "$(Pipeline.Workspace)/$(artifactName)/*.tgz"
 
+                - script: |
+                    git version
+                    git clone https://$(git_user):$(git_token)@github.com/FirelyTeam/Helm.Charts.git $(Pipeline.Workspace)/pr
+                    cd $(Pipeline.Workspace)/pr  
+                    git checkout -b $PR_BRANCH_NAME
+                    cp $(Pipeline.Workspace)/$(artifactName)/index.yaml .
+                    git config --global user.email $(git_emailaddress)
+                    git config --global user.name $(git_user)
+                    git add .
+                    git commit -m Update index.yaml for release '$(release_title)'" --no-gpg-sign
+                    git push
+                    gh pr create --title "Update Helm Chart index.yam to $(release_title)" --body "This PR updates the Helm Chart index (index.yaml) to the latest release '$(release_title)'."
+                  displayName: "Create pull request"
+                  env:
+                    BASE_BRANCH: "gh-pages"
+                    PR_BRANCH_NAME: "update-index"
 
-
-
-
-
-        
-
+                - script: |
+                    # create pull request for index.yaml
+                    echo 'create git directory'
+                    mkdir -p $(Pipeline.Workspace)/pr
+                    echo 'cd $(Pipeline.Workspace)/pr'
+                    cd $(Pipeline.Workspace)/pr                
+                    echo 'git init $(Pipeline.Workspace)/pr'
+                    git init $(Pipeline.Workspace)/pr                
+                    echo 'git remote add origin $(Build.Repository.Uri)'
+                    git remote add origin $(Build.Repository.Uri)
+                    echo 'git remote set-url origin https://$GITHUB_TOKEN@github.com/FirelyTeam/Helm.Charts'
+                    git remote set-url origin https://$GITHUB_TOKEN@github.com/FirelyTeam/Helm.Charts
+                    echo 'git config --global user.email "pipelines@azure.com"'
+                    git config --global user.email "pipelines@azure.com"
+                    echo 'git config --global user.name "Azure Pipelines"'
+                    git config --global user.name "Azure Pipelines"
+                    echo 'git clone --branch $BASE_BRANCH $(Build.Repository.Uri)'
+                    git clone --branch $BASE_BRANCH $(Build.Repository.Uri)
+                    cd Helm.Charts
+                    ls -laR .
+                    echo 'git checkout -b $PR_BRANCH_NAME'
+                    git checkout -b $PR_BRANCH_NAME
+                    echo 'cp $(Pipeline.Workspace)/$(artifactName)/index.yaml .'
+                    cp $(Pipeline.Workspace)/$(artifactName)/index.yaml .
+                    echo 'git add index.yaml'
+                    git add index.yaml
+                    echo 'git commit -m "Update index.yaml for release '$(release_title)'"'
+                    git commit -m "Update index.yaml for release '$(release_title)'" --no-gpg-sign
+                    echo 'git push --set-upstream origin $PR_BRANCH_NAME'
+                    git push --set-upstream origin $PR_BRANCH_NAME
+                    echo 'gh pr create --title "Update Helm Chart index.yam to $(release_title)" --body "This PR updates the Helm Chart index (index.yaml) to the latest release '$(release_title)'."'	
+                    gh pr create --title "Update Helm Chart index.yam to $(release_title)" --body "This PR updates the Helm Chart index (index.yaml) to the latest release '$(release_title)'."
+                  displayName: "OLD: Create pull request"
+                  condition: false
+                  env:
+                    GITHUB_TOKEN: $(RELEASE_GIT_TOKEN)
+                    BASE_BRANCH: "gh-pages"
+                    PR_BRANCH_NAME: "update-index"

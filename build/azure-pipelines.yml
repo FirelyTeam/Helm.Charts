@@ -115,7 +115,7 @@ stages:
 
                 - script: |
                     git version
-                    git clone https://$(git_user):$(git_token)@github.com/FirelyTeam/Helm.Charts.git $(Pipeline.Workspace)/pr
+                    git clone -b $BASE_BRANCH https://$(git_user):$(git_token)@github.com/FirelyTeam/Helm.Charts.git $(Pipeline.Workspace)/pr
                     cd $(Pipeline.Workspace)/pr  
                     git checkout -b $PR_BRANCH_NAME
                     cp $(Pipeline.Workspace)/$(artifactName)/index.yaml .
@@ -127,6 +127,7 @@ stages:
                     gh pr create --title "Update Helm Chart index.yam to $(release_title)" --body "This PR updates the Helm Chart index.yaml to the latest release $(release_title)."
                   displayName: "Create pull request"
                   env:
+                    GITHUB_TOKEN: $(git_token)
                     BASE_BRANCH: "gh-pages"
                     PR_BRANCH_NAME: "update-index"
 

@@ -124,48 +124,9 @@ stages:
                     git add index.yaml
                     git commit -m "Update index.yaml for release '$(release_title)'" --no-gpg-sign
                     git push --set-upstream origin $PR_BRANCH_NAME
-                    gh pr create --title "Update Helm Chart index.yam to $(release_title)" --body "This PR updates the Helm Chart index.yaml to the latest release $(release_title)."
+                    gh pr create --base "$BASE_BRANCH" --head "$PR_BRANCH_NAME" --title "Update Helm Chart index.yam to $(release_title)" --body "This PR updates the Helm Chart index.yaml to the latest release $(release_title)."
                   displayName: "Create pull request"
                   env:
                     GITHUB_TOKEN: $(git_token)
-                    BASE_BRANCH: "gh-pages"
-                    PR_BRANCH_NAME: "update-index"
-
-                - script: |
-                    # create pull request for index.yaml
-                    echo 'create git directory'
-                    mkdir -p $(Pipeline.Workspace)/pr
-                    echo 'cd $(Pipeline.Workspace)/pr'
-                    cd $(Pipeline.Workspace)/pr                
-                    echo 'git init $(Pipeline.Workspace)/pr'
-                    git init $(Pipeline.Workspace)/pr                
-                    echo 'git remote add origin $(Build.Repository.Uri)'
-                    git remote add origin $(Build.Repository.Uri)
-                    echo 'git remote set-url origin https://$GITHUB_TOKEN@github.com/FirelyTeam/Helm.Charts'
-                    git remote set-url origin https://$GITHUB_TOKEN@github.com/FirelyTeam/Helm.Charts
-                    echo 'git config --global user.email "pipelines@azure.com"'
-                    git config --global user.email "pipelines@azure.com"
-                    echo 'git config --global user.name "Azure Pipelines"'
-                    git config --global user.name "Azure Pipelines"
-                    echo 'git clone --branch $BASE_BRANCH $(Build.Repository.Uri)'
-                    git clone --branch $BASE_BRANCH $(Build.Repository.Uri)
-                    cd Helm.Charts
-                    ls -laR .
-                    echo 'git checkout -b $PR_BRANCH_NAME'
-                    git checkout -b $PR_BRANCH_NAME
-                    echo 'cp $(Pipeline.Workspace)/$(artifactName)/index.yaml .'
-                    cp $(Pipeline.Workspace)/$(artifactName)/index.yaml .
-                    echo 'git add index.yaml'
-                    git add index.yaml
-                    echo 'git commit -m "Update index.yaml for release '$(release_title)'"'
-                    git commit -m "Update index.yaml for release '$(release_title)'" --no-gpg-sign
-                    echo 'git push --set-upstream origin $PR_BRANCH_NAME'
-                    git push --set-upstream origin $PR_BRANCH_NAME
-                    echo 'gh pr create --title "Update Helm Chart index.yam to $(release_title)" --body "This PR updates the Helm Chart index (index.yaml) to the latest release '$(release_title)'."'	
-                    gh pr create --title "Update Helm Chart index.yam to $(release_title)" --body "This PR updates the Helm Chart index (index.yaml) to the latest release '$(release_title)'."
-                  displayName: "OLD: Create pull request"
-                  condition: false
-                  env:
-                    GITHUB_TOKEN: $(RELEASE_GIT_TOKEN)
                     BASE_BRANCH: "gh-pages"
                     PR_BRANCH_NAME: "update-index"

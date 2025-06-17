@@ -31,6 +31,12 @@ license:
 # kubectl create secret generic -n ${FA_NAMESPACE} fa-env-secret  --from-literal=FIRELY_AUTH_UserStore__SqlServer__ConnectionString='User Id=fauser;...'
 envFromSecret: ""
 
+# The name of a configmap in the same kubernetes  namespace which contains values to be added to
+# the environment (must be manually created).
+# For example, run the following to specify the sentence to be displayed in the login page:
+# kubectl create cm -n auth-fire-ly auth-custom-cm --from-literal=FIRELY_AUTH_UISettings__LoginPageText="Sign in to Company XYZ Auth Server"
+envFromConfigMap: ""
+
 # An array of environment variables expressed as key-value pair, name and value, to add to the container
 extraEnvs: []
 

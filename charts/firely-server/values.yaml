@@ -40,6 +40,12 @@ license:
 # kubectl create secret generic -n ${FS_NAMESPACE} vonk-env-secret --from-literal=VONK_SqlDbOptions__ConnectionString='User Id=...'
 envFromSecret: ""
 
+# The name of a configmap in the same kubernetes namespace which contains values to
+# be added to the environment (must be manually created)
+# For example, run the following to specify the import folder for the import plugin:
+# kubectl create configmap -n ${FS_NAMESPACE} vonk-env-configmap --from-literal=VONK_Import__ImportFolder='/mnt/custom/import'
+envFromConfigMap: ""
+
 # An array of environment variables expressed as key-value pair, name and value, to add to the container
 extraEnvs: []
 

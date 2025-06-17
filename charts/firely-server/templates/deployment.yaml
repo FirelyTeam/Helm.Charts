@@ -76,7 +76,7 @@ spec:
               fieldRef:
                 fieldPath: metadata.uid
           - name: SERVICE_VERSION
-            value: {{ .Values.image.tag }}
+            value: {{ .Values.image.tag | default .Chart.AppVersion }}
           - name: SERVICE_NAME
             value: {{ include "firely-server.fullname" . }}
           - name: SERVICE_NAMESPACE

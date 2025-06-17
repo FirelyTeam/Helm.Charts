@@ -53,7 +53,7 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
@@ -76,7 +76,7 @@ spec:
               fieldRef:
                 fieldPath: metadata.uid
           - name: SERVICE_VERSION
-            value: {{ .Values.image.tag }}
+            value: {{ .Values.image.tag | default .Chart.AppVersion }}
           - name: SERVICE_NAME
             value: {{ include "firely-server.fullname" . }}
           - name: SERVICE_NAMESPACE

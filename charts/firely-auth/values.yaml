@@ -55,8 +55,8 @@ replicaCount: 1
 image:
   repository: firely/auth
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: "4.1.1"
+  # Overrides the image tag. If left blank, it will fallback to .Chart.AppVersion via the Helm default function.
+  tag: ""
 
 imagePullSecrets: []
 nameOverride: ""

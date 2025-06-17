@@ -6,7 +6,8 @@ replicaCount: 1
 
 image:
   repository: firely/server
-  tag: 5.9.1
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
   pullPolicy: IfNotPresent
 
 # Add you annotations to the deployment here

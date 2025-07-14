@@ -92,8 +92,13 @@ The following table lists the configurable parameters of the firely-server chart
 | `livenessProbe.successThreshold`                         | inimum consecutive successes for the probe to be considered successful after having failed | `1` |
 | `resources.limits`                                       | The resources limits for the Firely Server container | `{}`|
 | `resources.requests`                                     | The requested resources for the Firely Server container | `{}` |
+| `autoscaling.enabled`                                   | Enable Horizontal Pod Autoscaler for Firely Server                           | `false` |
+| `autoscaling.minReplicas`                               | Minimum number of replicas for the Horizontal Pod Autoscaler            | `1` |
+| `autoscaling.maxReplicas`                               | Maximum number of replicas for the Horizontal Pod Autoscaler            | `10` |
+| `autoscaling.targetCPUUtilizationPercentage` | Target CPU utilization percentage for the Horizontal Pod Autoscaler     | `80` |
+| `autoscaling.targetMemoryUtilizationPercentage` | Target Memory utilization percentage for the Horizontal Pod Autoscaler     | `80` |
 
-
+Note that in order to use the Horizontal Pod Autoscaler, the Kubernetes cluster must have the [metrics server](https://github.com/kubernetes-sigs/metrics-server) installed and running.
 
 ### Traffic Exposure Parameters
  Name                                                      | Description                                                               | Default                                             |

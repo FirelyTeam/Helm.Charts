@@ -1,7 +1,7 @@
 apiVersion: v2
 name: firely-auth
 description: A Helm chart for Kubernetes, deploying the Firely Auth Server
-kubeVersion: ">= 1.19"
+kubeVersion: ">= 1.19.0-0"
 icon: https://fire.ly/wp-content/uploads/2021/09/ICONS_FIRELY_02-04.svg
 maintainers:
   - name: Louis Latour
@@ -22,7 +22,7 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.7.0
+version: 0.7.1
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

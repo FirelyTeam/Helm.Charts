@@ -2,6 +2,22 @@ apiVersion: v1
 entries:
   firely-auth:
   - apiVersion: v2
+    appVersion: 4.3.0
+    created: "2025-09-02T10:32:30.809641095Z"
+    description: A Helm chart for Kubernetes, deploying the Firely Auth Server
+    digest: 2485f53c91aa250a48277d67874da74de585bf2cb7e3742305b6c327d29d3430
+    icon: https://fire.ly/wp-content/uploads/2021/09/ICONS_FIRELY_02-04.svg
+    kubeVersion: '>= 1.19.0-0'
+    maintainers:
+    - email: louis@fire.ly
+      name: Louis Latour
+      url: https://fire.ly
+    name: firely-auth
+    type: application
+    urls:
+    - https://github.com/FirelyTeam/Helm.Charts/releases/download/FA%2Fv0.7.1/firely-auth-0.7.1.tgz
+    version: 0.7.1
+  - apiVersion: v2
     appVersion: 4.1.1
     created: "2024-12-19T13:56:40.637081109Z"
     description: A Helm chart for Kubernetes, deploying the Firely Auth Server
@@ -395,4 +411,4 @@ entries:
     urls:
     - https://github.com/FirelyTeam/Helm.Charts/releases/download/FS%2Fv0.11.0/firely-server-0.11.0.tgz
     version: 0.11.0
-generated: "2025-09-02T10:12:51.814296819Z"
+generated: "2025-09-02T10:32:30.808868543Z"

@@ -64,6 +64,8 @@ The following table lists the configurable parameters of the firely-auth chart a
 | `license.mountPath`                                      | The folder where the license is mounted. | `/var/run/license` |
 | `license.mountedFromExtraVolumes`                        | If `true`, the license file is mounted from an extra volume, ignoring `license.Value` and `license.secretName` in this case. See more information below. | `false` |
 | `license.value`                                          | The content of the license. See also more information below. | `nil` |
+| `duendeLicense.value`                                   | A valid Duende IdentityServer license key. See more information below. | `nil` |
+| `duendeLicense.existingSecretName`                       | If set, use this existing secret instead of creating a new one. The secret must contain a key named Duende_License.key. See more information below. | `nil` |
 | `envFromSecret`                                          | The name of an existing secret in the same kubernetes namespace which contains key-value pairs which are converted into environment variables of the Firely Auth container. This is the recommended approach for specifying all confidential settings, like connection strings, etc. For example, run the following to create a secret containing a connection string for MSSQL: `kubectl create secret generic -n ${FA_NAMESPACE} fa-env-secret  --from-literal=FIRELY_AUTH_UserStore__SqlServer__ConnectionString='User Id=fauser;...'`| `nil` |
 | `envFromConfigMap`                                       | The name of a configmap in the same kubernetes  namespace which contains values to be added to the environment (must be manually created). For example, run the following to specify the sentence to be displayed in the login page: `kubectl create cm -n auth-fire-ly auth-custom-cm --from-literal=FIRELY_AUTH_UISettings__LoginPageText="Sign in to Company XYZ Auth Server"` | `nil` |
 | `extraVolumes`                                           | Array of additional volumes to be mounted in the Firely Auth container | `[]` |
@@ -126,7 +128,7 @@ Note that in order to use the Horizontal Pod Autoscaler, the Kubernetes cluster 
 
 
 
-## Obtaining and using a license
+## Obtaining and using a Firely license
 
 Download the the license file from [Simplifier.net](https://simplifier.net/firely-auth).
 
@@ -162,6 +164,30 @@ license:
 
 ### Using a keyvault
 See the dedicated keyvault section below.
+
+## Obtaining and using a Duende IdentityServer license
+In order to use Firely Auth in production, you need a valid Duende IdentityServer license. You can contact Firely to obtain such a license.
+Once you have a valid license key, you can use it in two ways.
+### Using helm value `duendeLicense.value`
+You can add the Duende license directly in the values.yaml used in the `helm install` command:
+
+```yaml
+duendeLicense:
+  value: 'your-valid-duende-license-key'
+```
+> **Note**: the option value should be on one line. No line feeds.
+
+### Using an existing secret
+If you already have a secret containing the Duende license key, you can use it by specifying the name of that secret in the `values.yaml` used in the `helm install` command:
+```yaml
+duendeLicense:
+  existingSecretName: 'name-of-your-existing-secret'
+```
+The secret must contain a key named `Duende_License.key` containing the license key. So, in order to create such a secret, you can use a command similar to:
+```SH
+kubectl create secret generic -n auth-fire-ly name-of-your-existing-secret --from-file=./Duende_License.key
+```
+
 
 ## Override Firely Auth settings
 There are multiple ways to specify Firely Server settings.

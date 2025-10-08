@@ -91,6 +91,12 @@ spec:
             mountPath: /app/logsettings.instance.json
             subPath: logsettings.json
 
+          {{- if or .Values.duendeLicense.value .Values.duendeLicense.existingSecretName }}
+          - name: duende-license
+            mountPath: /app/Duende_License.key
+            subPath: Duende_License.key
+            readOnly: true
+          {{- end }}
           {{- if .Values.extraMountPoints }}
             {{- toYaml .Values.extraMountPoints | nindent 10 }}
           {{- end }}
@@ -111,6 +117,16 @@ spec:
           secretName: {{ include "firely-auth.fullname" . }}-license-secret
         {{- else }}
         emptyDir: {}
+        {{- end }}
+      {{- end }}
+      {{- if or .Values.duendeLicense.value .Values.duendeLicense.existingSecretName }}
+      - name: duende-license
+        {{- if .Values.duendeLicense.existingSecretName }}
+        secret:
+          secretName: {{ .Values.duendeLicense.existingSecretName }}
+        {{- else if .Values.duendeLicense.value }}
+        secret:
+          secretName: {{ include "firely-auth.fullname" . }}-duende-license-secret
         {{- end }}
       {{- end }}
       - name: firely-auth-storage

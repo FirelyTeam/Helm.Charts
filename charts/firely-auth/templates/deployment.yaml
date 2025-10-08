@@ -119,7 +119,7 @@ spec:
         emptyDir: {}
         {{- end }}
       {{- end }}
-      {{ if or .Values.duendeLicense.value .Values.duendeLicense.existingSecretName }}
+      {{- if or .Values.duendeLicense.value .Values.duendeLicense.existingSecretName }}
       - name: duende-license
         {{- if .Values.duendeLicense.existingSecretName }}
         secret:

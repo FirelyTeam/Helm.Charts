@@ -23,6 +23,9 @@ license:
   mountPath: /var/run/license # the path where the license file is mounted
   mountedFromExtraVolumes: false # if true, the license file is mounted from an extra volume
 
+duendeLicense:
+  value: # a valid Duende IdentityServer license key
+  existingSecretName: # if set, use this existing secret instead of creating a new one. The secret must contain a key named Duende_License.key
 
 # The name of a secret in the same kubernetes namespace which contains values to
 # be added to the environment (must be manually created)

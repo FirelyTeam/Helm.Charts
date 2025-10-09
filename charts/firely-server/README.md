@@ -120,6 +120,8 @@ Note that in order to use the Horizontal Pod Autoscaler, the Kubernetes cluster 
 | `persistence.enabled`                                    | When set to `true` a mount would be available in the Firely Server pod on path `/var/run/vonk` | `false` |
 | `persistence.existingPVClaim`                            | The name of an existing PVC to use for persistence                        | `nil` |
 
+See below for more information about persistence.
+
 ### Firely Server Validation service Parameters
 
 This validation service is experimental and is not supported yet. 
@@ -360,6 +362,54 @@ extraEnvs:
         key: <FS_MSSQL_CONNECTION_STRING_SECRET_DATAKEY>
         name: firely-keyvault-secrets
 ...
+```
+
+## Using persistence
+In order to share a volume between Firely Server pods, you need to create a Persistent Volume Claim (PVC) that supports ReadWriteMany access mode.
+On Azure, you can use Azure File Share for this purpose. Below is an example of a PVC configuration that you can use. When using other cloud providers or on-premises solutions, ensure that the storage class you choose supports ReadWriteMany access mode.
+
+1. Create a file named `persistence-pvc.yaml` with the following content:
+
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: shared-azurefile
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: azurefile-csi
+  resources:
+    requests:
+      storage: 5Gi
+```
+2. Apply the PVC configuration to your Kubernetes cluster:
+
+```bash
+kubectl apply -f persistence-pvc.yaml -n <your-namespace>
+```
+
+3. Update your Firely Server Helm chart values to use the created PVC. In your `firely-server-values.yaml` (or equivalent) values file, set the persistence section as follows:
+
+```yaml
+persistence:
+   enabled: true
+   existingPVClaim: shared-azurefile
+```
+Typically, this shared volume could be used for storing the import history file. As the shared volume is mounted on `/var/run/vonk`, you might want to configure the import/export directories in the `vonksettings` section as follows:
+```yaml
+vonksettings:
+  ...
+  AdministrationImportOptions:
+    ImportDirectory: "./vonk-import"
+    ImportedDirectory: "/var/run/vonk/vonk-imported"
+  ...
+```
+
+4. Deploy or upgrade your Firely Server Helm release with the updated values file:
+
+```bash
+helm upgrade --install firely-server firely/firely-server -f firely-server-values.yaml -n <your-namespace>
 ```
 
 ## Deploying Opentelemetry-collector, Telegraf and InfluxDb2

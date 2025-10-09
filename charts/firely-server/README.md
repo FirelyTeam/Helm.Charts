@@ -396,7 +396,7 @@ persistence:
    enabled: true
    existingPVClaim: shared-azurefile
 ```
-Typically, this shared volume could be used for storing the import history file. As the shared volume is mounted on `/var/run/vonk`, you might want to configure the import/export directories in the `vonksettings` section as follows:
+Typically, this shared volume could be used for storing the import history file if you are not using sqlite for your administration database. For this use case, as the shared volume is mounted on `/var/run/vonk`, you might want to configure the import/export directories in the `vonksettings` section as follows:
 ```yaml
 vonksettings:
   ...
@@ -410,6 +410,49 @@ vonksettings:
 
 ```bash
 helm upgrade --install firely-server firely/firely-server -f firely-server-values.yaml -n <your-namespace>
+```
+
+Once the pod is running, you can check the content of the import history on the pod:
+```bash
+$ kubectl exec -it  -n <your-namespace> firely-server-57d9ccc575-f2hxq  -- more /var/run/vonk/vonk-imported/.vonk-import-history.json
+Defaulted container "firely-server" out of: firely-server, init-permissions (init)
+[
+  {
+    "SourceName": "/app/specification_Fhir3_0.zip",
+    "Md5Hash": "oNOm1xoz10BVa5zTzCeZkw==",
+    "TimeStamp": "2025-10-09T12:29:04.1769437+00:00"
+  },
+  {
+    "SourceName": "/app/errataFhir3.0.zip",
+    "Md5Hash": "meKTFMXmPAGAeZtJ7O+kTQ==",
+    "TimeStamp": "2025-10-09T12:30:10.024782+00:00"
+  },
+  {
+    "SourceName": "/app/specification_Fhir4_0.zip",
+    "Md5Hash": "s6p3USAPHxBPM743VbRDzA==",
+    "TimeStamp": "2025-10-09T12:33:03.6306765+00:00"
+  },
+  {
+    "SourceName": "/app/errataFhir4.0.zip",
+    "Md5Hash": "g2IP4KeF+AkihK8k2fZjqQ==",
+    "TimeStamp": "2025-10-09T12:34:50.7062956+00:00"
+  },
+  {
+    "SourceName": "/app/specification_Fhir5_0.zip",
+    "Md5Hash": "BuV6LwrJ9mH+95O1qoddtA==",
+    "TimeStamp": "2025-10-09T12:40:47.0930116+00:00"
+  },
+  {
+    "SourceName": "/app/additional_Fhir5.0_1_terminology.zip",
+    "Md5Hash": "QVh+2gRuxy3O0He/sNMK1w==",
+    "TimeStamp": "2025-10-09T12:42:18.5640005+00:00"
+  },
+  {
+    "SourceName": "/app/errataFhir5.0.zip",
+    "Md5Hash": "xO7Bt2lNeGC2RaI12gYkuw==",
+    "TimeStamp": "2025-10-09T12:42:32.3683606+00:00"
+  }
+]%
 ```
 
 ## Deploying Opentelemetry-collector, Telegraf and InfluxDb2

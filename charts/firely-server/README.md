@@ -120,6 +120,8 @@ Note that in order to use the Horizontal Pod Autoscaler, the Kubernetes cluster 
 | `persistence.enabled`                                    | When set to `true` a mount would be available in the Firely Server pod on path `/var/run/vonk` | `false` |
 | `persistence.existingPVClaim`                            | The name of an existing PVC to use for persistence                        | `nil` |
 
+See below for more information about persistence.
+
 ### Firely Server Validation service Parameters
 
 This validation service is experimental and is not supported yet. 
@@ -360,6 +362,97 @@ extraEnvs:
         key: <FS_MSSQL_CONNECTION_STRING_SECRET_DATAKEY>
         name: firely-keyvault-secrets
 ...
+```
+
+## Using persistence
+In order to share a volume between Firely Server pods, you need to create a Persistent Volume Claim (PVC) that supports ReadWriteMany access mode.
+On Azure, you can use Azure File Share for this purpose. Below is an example of a PVC configuration that you can use. When using other cloud providers or on-premises solutions, ensure that the storage class you choose supports ReadWriteMany access mode.
+
+1. Create a file named `persistence-pvc.yaml` with the following content:
+
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: shared-azurefile
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: azurefile-csi
+  resources:
+    requests:
+      storage: 5Gi
+```
+2. Apply the PVC configuration to your Kubernetes cluster:
+
+```bash
+kubectl apply -f persistence-pvc.yaml -n <your-namespace>
+```
+
+3. Update your Firely Server Helm chart values to use the created PVC. In your `firely-server-values.yaml` (or equivalent) values file, set the persistence section as follows:
+
+```yaml
+persistence:
+   enabled: true
+   existingPVClaim: shared-azurefile
+```
+Typically, this shared volume could be used for storing the import history file if you are not using sqlite for your administration database. For this use case, as the shared volume is mounted on `/var/run/vonk`, you might want to configure the import/export directories in the `vonksettings` section as follows:
+```yaml
+vonksettings:
+  ...
+  AdministrationImportOptions:
+    ImportDirectory: "./vonk-import"
+    ImportedDirectory: "/var/run/vonk/vonk-imported"
+  ...
+```
+
+4. Deploy or upgrade your Firely Server Helm release with the updated values file:
+
+```bash
+helm upgrade --install firely-server firely/firely-server -f firely-server-values.yaml -n <your-namespace>
+```
+
+Once the pod is running, you can check the content of the import history on the pod:
+```bash
+$ kubectl exec -it  -n <your-namespace> firely-server-57d9ccc575-f2hxq  -- more /var/run/vonk/vonk-imported/.vonk-import-history.json
+Defaulted container "firely-server" out of: firely-server, init-permissions (init)
+[
+  {
+    "SourceName": "/app/specification_Fhir3_0.zip",
+    "Md5Hash": "oNOm1xoz10BVa5zTzCeZkw==",
+    "TimeStamp": "2025-10-09T12:29:04.1769437+00:00"
+  },
+  {
+    "SourceName": "/app/errataFhir3.0.zip",
+    "Md5Hash": "meKTFMXmPAGAeZtJ7O+kTQ==",
+    "TimeStamp": "2025-10-09T12:30:10.024782+00:00"
+  },
+  {
+    "SourceName": "/app/specification_Fhir4_0.zip",
+    "Md5Hash": "s6p3USAPHxBPM743VbRDzA==",
+    "TimeStamp": "2025-10-09T12:33:03.6306765+00:00"
+  },
+  {
+    "SourceName": "/app/errataFhir4.0.zip",
+    "Md5Hash": "g2IP4KeF+AkihK8k2fZjqQ==",
+    "TimeStamp": "2025-10-09T12:34:50.7062956+00:00"
+  },
+  {
+    "SourceName": "/app/specification_Fhir5_0.zip",
+    "Md5Hash": "BuV6LwrJ9mH+95O1qoddtA==",
+    "TimeStamp": "2025-10-09T12:40:47.0930116+00:00"
+  },
+  {
+    "SourceName": "/app/additional_Fhir5.0_1_terminology.zip",
+    "Md5Hash": "QVh+2gRuxy3O0He/sNMK1w==",
+    "TimeStamp": "2025-10-09T12:42:18.5640005+00:00"
+  },
+  {
+    "SourceName": "/app/errataFhir5.0.zip",
+    "Md5Hash": "xO7Bt2lNeGC2RaI12gYkuw==",
+    "TimeStamp": "2025-10-09T12:42:32.3683606+00:00"
+  }
+]%
 ```
 
 ## Deploying Opentelemetry-collector, Telegraf and InfluxDb2

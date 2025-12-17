@@ -1,6 +1,6 @@
 apiVersion: v2
-appVersion: "6.4.0"
-version: 0.21.0
+appVersion: "6.5.0"
+version: 0.22.0
 kubeVersion: ">= 1.19.0-0"
 name: firely-server
 description: Firely Server is an enterprise-grade FHIR server meant for production environments large and small alike. 

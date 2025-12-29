@@ -1,14 +1,14 @@
 apiVersion: v2
 appVersion: "6.4.0"
-version: "0.21.0"
+version: 0.21.0
 kubeVersion: ">= 1.19.0-0"
 name: firely-server
 description: Firely Server is an enterprise-grade FHIR server meant for production environments large and small alike. 
 home: https://fire.ly/products/firely-server/
 icon: https://fire.ly/wp-content/uploads/2021/09/ICONS_FIRELY_02-04.svg
 maintainers:
-  - name: Louis Latour
-    email: louis@fire.ly
+  - name: Marten Smits
+    email: marten@fire.ly
     url: https://fire.ly
 type: application
 

@@ -97,6 +97,11 @@ The following table lists the configurable parameters of the firely-server chart
 | `autoscaling.maxReplicas`                               | Maximum number of replicas for the Horizontal Pod Autoscaler            | `10` |
 | `autoscaling.targetCPUUtilizationPercentage` | Target CPU utilization percentage for the Horizontal Pod Autoscaler     | `80` |
 | `autoscaling.targetMemoryUtilizationPercentage` | Target Memory utilization percentage for the Horizontal Pod Autoscaler     | `80` |
+| `podDisruptionBudget.enabled`                           | Enable PodDisruptionBudget for Firely Server                                 | `false` |
+| `podDisruptionBudget.minAvailable`                      | Minimum available pods allowed during a voluntary disruption               | `nil` |
+| `podDisruptionBudget.maxUnavailable`                    | Maximum unavailable pods allowed during a voluntary disruption             | `1` |
+| `podDisruptionBudget.labels`                            | Extra labels to add to the PodDisruptionBudget                             | `{}` |
+| `podDisruptionBudget.annotations`                       | Annotations to add to the PodDisruptionBudget                              | `{}` |
 
 Note that in order to use the Horizontal Pod Autoscaler, the Kubernetes cluster must have the [metrics server](https://github.com/kubernetes-sigs/metrics-server) installed and running.
 

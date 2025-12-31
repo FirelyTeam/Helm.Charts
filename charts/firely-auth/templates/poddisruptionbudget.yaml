@@ -20,5 +20,7 @@ spec:
   minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}
   {{- else if .Values.podDisruptionBudget.maxUnavailable }}
   maxUnavailable: {{ .Values.podDisruptionBudget.maxUnavailable }}
+  {{- else }}
+  {{-   fail "podDisruptionBudget.enabled is true, but neither podDisruptionBudget.minAvailable nor podDisruptionBudget.maxUnavailable is set. Please configure one of them." }}
   {{- end }}
 {{- end }}

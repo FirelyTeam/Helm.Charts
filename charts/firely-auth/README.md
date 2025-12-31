@@ -95,7 +95,7 @@ The following table lists the configurable parameters of the firely-auth chart a
 | `autoscaling.targetCPUUtilizationPercentage` | Target CPU utilization percentage for the Horizontal Pod Autoscaler     | `80` |
 | `autoscaling.targetMemoryUtilizationPercentage` | Target Memory utilization percentage for the Horizontal Pod Autoscaler     | `80` |
 | `podDisruptionBudget.enabled`                           | Enable PodDisruptionBudget for Firely Auth                                 | `false` |
-| `podDisruptionBudget.minAvailable`                      | Minimum available pods allowed during a voluntary disruption               | `nil` |
+| `podDisruptionBudget.minAvailable`                      | Minimum available pods allowed during a voluntary disruption               | `1` |
 | `podDisruptionBudget.maxUnavailable`                    | Maximum unavailable pods allowed during a voluntary disruption             | `1` |
 | `podDisruptionBudget.labels`                            | Extra labels to add to the PodDisruptionBudget                             | `{}` |
 | `podDisruptionBudget.annotations`                       | Annotations to add to the PodDisruptionBudget                              | `{}` |

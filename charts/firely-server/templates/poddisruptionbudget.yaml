@@ -1,0 +1,29 @@
+{{- if .Values.podDisruptionBudget.enabled }}
+{{- if and (ne .Values.podDisruptionBudget.minAvailable nil) (ne .Values.podDisruptionBudget.maxUnavailable nil) }}
+{{-   fail "podDisruptionBudget.enabled is true, but both podDisruptionBudget.minAvailable and podDisruptionBudget.maxUnavailable are set. Please set exactly one of them." }}
+{{- end }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "firely-server.fullname" . }}
+  labels:
+    {{- include "firely-server.labels" . | nindent 4 }}
+    {{- with .Values.podDisruptionBudget.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.podDisruptionBudget.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "firely-server.selectorLabels" . | nindent 6 }}
+  {{- if ne .Values.podDisruptionBudget.minAvailable nil }}
+  minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}
+  {{- else if ne .Values.podDisruptionBudget.maxUnavailable nil }}
+  maxUnavailable: {{ .Values.podDisruptionBudget.maxUnavailable }}
+  {{- else }}
+  {{-   fail "podDisruptionBudget.enabled is true, but neither podDisruptionBudget.minAvailable nor podDisruptionBudget.maxUnavailable is set. Please configure one of them." }}
+  {{- end }}
+{{- end }}

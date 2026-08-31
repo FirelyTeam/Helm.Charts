@@ -163,6 +163,37 @@ entries:
     version: 0.2.0
   firely-server:
   - apiVersion: v2
+    appVersion: 6.9.1
+    created: "2026-08-31T07:22:38.301705019Z"
+    dependencies:
+    - condition: influxdb2.enabled
+      name: influxdb2
+      repository: https://helm.influxdata.com/
+      version: 2.1.2
+    - condition: telegraf.enabled
+      name: telegraf
+      repository: https://helm.influxdata.com/
+      version: 1.8.48
+    - condition: opentelemetry-collector.enabled
+      name: opentelemetry-collector
+      repository: https://open-telemetry.github.io/opentelemetry-helm-charts
+      version: 0.90.1
+    description: Firely Server is an enterprise-grade FHIR server meant for production
+      environments large and small alike.
+    digest: e5644d02766a3907a96ced05ea3781857709e730f93b0665ec4025d5e97de69e
+    home: https://fire.ly/products/firely-server/
+    icon: https://fire.ly/wp-content/uploads/2021/09/ICONS_FIRELY_02-04.svg
+    kubeVersion: '>= 1.19.0-0'
+    maintainers:
+    - email: devops@fire.ly
+      name: DevOps Team
+      url: https://fire.ly
+    name: firely-server
+    type: application
+    urls:
+    - https://github.com/FirelyTeam/Helm.Charts/releases/download/FS%2Fv0.29.0/firely-server-0.29.0.tgz
+    version: 0.29.0
+  - apiVersion: v2
     appVersion: 6.4.0
     created: "2025-09-08T06:01:14.756357151Z"
     dependencies:
@@ -474,4 +505,4 @@ entries:
     urls:
     - https://github.com/FirelyTeam/Helm.Charts/releases/download/FS%2Fv0.11.0/firely-server-0.11.0.tgz
     version: 0.11.0
-generated: "2025-10-08T16:28:58.493243225Z"
+generated: "2026-08-31T07:22:38.293031549Z"

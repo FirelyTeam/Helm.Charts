@@ -54,7 +54,7 @@ The following table lists the configurable parameters of the firely-server chart
 | `serviceAccount.create`                                  | Specifies whether a service account should be created                     | `true` |
 | `serviceAccount.annotations`                             | Annotations to add to the service account                                 | `{}` |
 | `serviceAccount.name`                                    | The name of the service account to use. If not set and create is true, a name is generated using the fullname template.                    | `""` |
-| `serviceAccount.automountServiceAccountToken`            | Whether to automatically mount the service account's API token into the pods. Left unset, the pods inherit the ServiceAccount's own setting (Kubernetes defaults to `true`), which keeps an externally managed ServiceAccount in charge when `serviceAccount.create` is `false`. Firely Server does not call the Kubernetes API, so this can safely be set to `false`. | unset |
+| `serviceAccount.automountServiceAccountToken`            | Mount the service account's API token into the pods. Unset inherits the ServiceAccount's own setting. Firely Server does not call the Kubernetes API, so `false` is safe. | unset |
 
 ### Security parameters
 

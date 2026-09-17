@@ -32,7 +32,9 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "firely-auth.serviceAccountName" . }}
+      {{- if not (kindIs "invalid" .Values.serviceAccount.automountServiceAccountToken) }}
       automountServiceAccountToken: {{ .Values.serviceAccount.automountServiceAccountToken }}
+      {{- end }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:

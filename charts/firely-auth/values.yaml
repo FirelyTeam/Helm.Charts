@@ -79,9 +79,12 @@ serviceAccount:
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name: ""
-  # Whether to automatically mount the service account's API token into the pod.
+  # Whether to automatically mount the service account's API token into the pods.
+  # Left unset, the pods inherit whatever the ServiceAccount specifies (Kubernetes
+  # itself defaults to true) — this matters when you bring your own ServiceAccount
+  # via create=false, since a pod-level value would otherwise override it.
   # Firely Auth does not call the Kubernetes API, so this can safely be set to false.
-  automountServiceAccountToken: true
+  automountServiceAccountToken: ~
 
 podAnnotations: {}
 

@@ -7,6 +7,9 @@ metadata:
   annotations:
     "helm.sh/hook": test
 spec:
+  {{- if not (kindIs "invalid" .Values.serviceAccount.automountServiceAccountToken) }}
+  automountServiceAccountToken: {{ .Values.serviceAccount.automountServiceAccountToken }}
+  {{- end }}
   containers:
     - name: wget
       image: busybox

@@ -19,6 +19,9 @@ spec:
       annotations:
         checksum/validation-settings.configmap: {{ include (print $.Template.BasePath "/validation-settings-configmap.yaml") . | sha256sum }}
     spec:
+      {{- if not (kindIs "invalid" .Values.serviceAccount.automountServiceAccountToken) }}
+      automountServiceAccountToken: {{ .Values.serviceAccount.automountServiceAccountToken }}
+      {{- end }}
       containers:
         - name: validation
           image: "{{ .Values.validation.image.registry }}/{{ .Values.validation.image.repository }}:{{ .Values.validation.image.tag }}"

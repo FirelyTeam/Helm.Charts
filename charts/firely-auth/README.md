@@ -130,7 +130,7 @@ Note that in order to use the Horizontal Pod Autoscaler, the Kubernetes cluster 
 | `serviceAccount.create`                                  | Specifies whether a service account should be created                     | `true` |
 | `serviceAccount.annotations`                             | Annotations to add to the service account                                 | `{}` |
 | `serviceAccount.name`                                    | The name of the service account to use. If not set and create is true, a name is generated using the fullname template.                    | `""` |
-| `serviceAccount.automountServiceAccountToken`            | Whether to automatically mount the service account's API token into the pod. Firely Auth does not call the Kubernetes API, so this can safely be set to `false`. | `true` |
+| `serviceAccount.automountServiceAccountToken`            | Whether to automatically mount the service account's API token into the pods. Left unset, the pods inherit the ServiceAccount's own setting (Kubernetes defaults to `true`), which keeps an externally managed ServiceAccount in charge when `serviceAccount.create` is `false`. Firely Auth does not call the Kubernetes API, so this can safely be set to `false`. | unset |
 
 
 

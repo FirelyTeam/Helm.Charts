@@ -140,7 +140,7 @@ stages:
                     git commit -m "Update index.yaml for release '$(release_title)'" --no-gpg-sign
                     git push --set-upstream origin $(prBranchName)
                     # the pull request stays open until it is merged, so it collects several releases
-                    gh pr view $(prBranchName) >/dev/null 2>&1 || gh pr create --base "$(baseBranch)" --head "$(prBranchName)" --title "Update Helm Chart index.yaml to $(release_title)" --body "This PR updates the Helm Chart index.yaml to the latest release $(release_title)."
+                    gh pr list --head $(prBranchName) --base $(baseBranch) --state open --json number --jq '.[].number' | grep -q . || gh pr create --base "$(baseBranch)" --head "$(prBranchName)" --title "Update Helm Chart index.yaml to $(release_title)" --body "This PR updates the Helm Chart index.yaml to the latest release $(release_title)."
                   displayName: "Create pull request"
                   env:
                     GITHUB_TOKEN: $(git_token)

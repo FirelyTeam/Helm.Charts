@@ -48,6 +48,14 @@ The following table lists the configurable parameters of the firely-server chart
 | `nameOverride`                                           | String to partially override firely-server.fullname template (will maintain the release name) | `""`
 | `fullnameOverride`                                       | String to fully override firely-server.fullname template | `""` |
 
+### Service Account parameters
+ Name                                                      | Description                                                               | Default                                             |
+| -------------------------------------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------- |
+| `serviceAccount.create`                                  | Specifies whether a service account should be created                     | `true` |
+| `serviceAccount.annotations`                             | Annotations to add to the service account                                 | `{}` |
+| `serviceAccount.name`                                    | The name of the service account to use. If not set and create is true, a name is generated using the fullname template.                    | `""` |
+| `serviceAccount.automountServiceAccountToken`            | Mount the service account's API token into the pods. Unset inherits the ServiceAccount's own setting. Firely Server does not call the Kubernetes API, so `false` is safe. | unset |
+
 ### Security parameters
 
  Name                                                      | Description                                                               | Default                                             |

@@ -18,6 +18,10 @@ variables:
     value: "3.17.0"
   - name: artifactName
     value: "helm-packages"
+  - name: baseBranch
+    value: "gh-pages"
+  - name: prBranchName
+    value: "update-index"
 
 pool:
   vmImage: "ubuntu-latest"
@@ -86,12 +90,21 @@ stages:
                   displayName: "Setting variables"
 
                 - script: |
-                    # download the index.yaml file from https://firelyteam.github.io/Helm.Charts
-                    curl -sS -o $(Pipeline.Workspace)/current-index.yaml https://firelyteam.github.io/Helm.Charts/index.yaml
+                    set -e
+                    git version
+                    git clone -b $(baseBranch) https://$(git_user):$(git_token)@github.com/FirelyTeam/Helm.Charts.git $(Pipeline.Workspace)/pr
+                    cd $(Pipeline.Workspace)/pr
+                    # continue on the open index pull request when it exists, otherwise start from the base branch.
+                    # merging into that index.yaml keeps entries of releases that are not merged into $(baseBranch) yet.
+                    if git fetch origin $(prBranchName); then
+                      git checkout -B $(prBranchName) FETCH_HEAD
+                    else
+                      git checkout -B $(prBranchName)
+                    fi
 
                     # Helm urldecodes the url, so we need to use a placeholder
                     placeholder='__TAG__'
-                    helm repo index $(Pipeline.Workspace)/$(artifactName) --url $(TARGET_SITE)/$placeholder --merge $(Pipeline.Workspace)/current-index.yaml
+                    helm repo index $(Pipeline.Workspace)/$(artifactName) --url $(TARGET_SITE)/$placeholder --merge $(Pipeline.Workspace)/pr/index.yaml
                     # replace the placeholder with the encoded tag
                     sed -i "s/$placeholder/$(tag_encoded)/g" $(Pipeline.Workspace)/$(artifactName)/index.yaml
                   displayName: "helm repo index"
@@ -114,19 +127,20 @@ stages:
                     assets: "$(Pipeline.Workspace)/$(artifactName)/*.tgz"
 
                 - script: |
-                    git version
-                    git clone -b $BASE_BRANCH https://$(git_user):$(git_token)@github.com/FirelyTeam/Helm.Charts.git $(Pipeline.Workspace)/pr
-                    cd $(Pipeline.Workspace)/pr  
-                    git checkout -b $PR_BRANCH_NAME
+                    set -e
+                    cd $(Pipeline.Workspace)/pr
                     cp $(Pipeline.Workspace)/$(artifactName)/index.yaml .
                     git config --global user.email $(git_emailaddress)
                     git config --global user.name $(git_user)
                     git add index.yaml
+                    if git diff --cached --quiet; then
+                      echo "index.yaml is unchanged, nothing to push"
+                      exit 0
+                    fi
                     git commit -m "Update index.yaml for release '$(release_title)'" --no-gpg-sign
-                    git push --set-upstream origin $PR_BRANCH_NAME
-                    gh pr create --base "$BASE_BRANCH" --head "$PR_BRANCH_NAME" --title "Update Helm Chart index.yaml to $(release_title)" --body "This PR updates the Helm Chart index.yaml to the latest release $(release_title)."
+                    git push --set-upstream origin $(prBranchName)
+                    # the pull request stays open until it is merged, so it collects several releases
+                    gh pr list --head $(prBranchName) --base $(baseBranch) --state open --json number --jq '.[].number' | grep -q . || gh pr create --base "$(baseBranch)" --head "$(prBranchName)" --title "Update Helm Chart index.yaml to $(release_title)" --body "This PR updates the Helm Chart index.yaml to the latest release $(release_title)."
                   displayName: "Create pull request"
                   env:
                     GITHUB_TOKEN: $(git_token)
-                    BASE_BRANCH: "gh-pages"
-                    PR_BRANCH_NAME: "update-index"
